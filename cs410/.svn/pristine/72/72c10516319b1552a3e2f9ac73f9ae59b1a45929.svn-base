@@ -1,0 +1,11 @@
+1- Easy query: The Human Genome Project
+
+2- Hard query: Natural Language Processing
+
+3- I don't think it was a good dataset for the given queries. The articles were from 1988 and there were many queries that had a recall/precision score of 0.
+
+4- If all the articles in the dataset were on a specific topic, one of the retrieval functions would possibly work a lot better than the other. Changing the size of the dataset could also cause a change in the results. 
+
+5- This corpus was relatively small, so the parameters chosen most likely have a strong correlation with the given dataset. I don't think the parameter settings I chose would generalize well to different groups.
+
+6- We can test the two different retreival functions over bigger datasets. This would give a smaller chance of the parameter settings being tailored to the given dataset. We could also test multiple datasets. A good retrieval function would work well on various corpuses.

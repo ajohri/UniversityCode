@@ -1,0 +1,170 @@
+/**
+ * Mad Mad Access Pattern
+ * CS 241 - Spring 2016
+ */
+#include <time.h>
+#include "tree.h"
+#include "utils.h"
+#include <stdlib.h>
+#include <string.h>
+/*
+  Look up a few nodes in the tree and print the info they contain.
+  This version uses fseek() and fread() to access the data.
+
+  ./lookup1 <data_file> <word> [<word> ...]
+*/
+
+#define MAX_LEN	80
+#define handle_error(msg) \
+        do { perror(msg); exit(EXIT_FAILURE); } while (0)
+
+char name[MAX_LEN];
+typedef struct timespec timespec_t;
+
+int main(int argc, char **argv) { 
+
+        char *addr, *start_addr;
+        int fd;
+        struct stat sb;
+//	FILE		*fp;
+	uint32_t	left_child_offset, right_child_offset;
+	int		i, found,residue, j;
+	char		signature[4], ch;
+	BinaryTreeNode	treenode;
+	int		num_tokens, ret;
+	timespec_t* timestart = (timespec_t*)malloc(sizeof(timespec_t));
+	timespec_t* timeend = (timespec_t*)malloc(sizeof(timespec_t));
+
+	clock_gettime(CLOCK_MONOTONIC, timestart);
+
+	if(argc < 1) {
+		printf("\n ./lookup1 <data_file> <word> [<word> ...]\n");
+		free(timestart);
+   		free(timeend);
+		exit(1);
+	}
+
+	num_tokens = argc -2;		// Number of adwords
+
+//	fp = fopen(argv[1], "rb");	// Reading file with binary data
+//	if (!fp) {
+//		openFail(argv[1]);
+//		free(timestart);
+//   		free(timeend);
+//		exit(0);
+//	}
+//	fread(signature, sizeof(char), 4, fp);
+//	if(strncmp(signature, "BTRE", 4) != 0){
+//		formatFail(argv[1]);
+//		free(timestart);
+//   		free(timeend);
+//		exit(2);
+//	}
+//
+        fd = open(argv[1], O_RDONLY);
+        if (fd == -1)
+                handle_error("open");
+
+        if (fstat(fd, &sb) == -1)                  /* To obtain file size */
+                handle_error("fstat");
+
+        addr = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+        if (addr == MAP_FAILED)
+                handle_error("mmap");
+
+	// Start the timer
+	// Iterate thru  key words one by one
+	// Search for the record corresponding to the input token
+	//   - Serach based on comparing with current record
+	//
+	// - If record found
+	//      print thte count and value
+	// - Else
+	//      Follow left or right offset based on the comparisong with name of
+	//      current record..
+	// - If we reach EOF and record not found
+	//      Print the error message
+	// - Pick the neck element in the adword list.
+	// Find timer
+	// - Print the elasped time
+
+	i = 0;
+	found = 0;
+
+	// Start the timer
+//	fseek(fp, 4, SEEK_SET);
+	start_addr = addr;
+	addr = addr+4;
+	for(j = 0; j< num_tokens; j++) { 
+		while((addr - start_Addr) <= sb.st_size) {
+			memcpy((void *)(&treenode), (void *)addr, sizeof(BinaryTreeNode);
+			addr = addr+sizeof(BinaryTreeNode);
+	 		while ((ch = *addr) != '\0' ) {
+	        		name[i++] = ch;
+	    		}
+			name[i] = '\0';
+			addr++;
+			ret = strcmp(argv[2+j], name);
+			//printf("Main: Name:%s Argument:%s\n", name, argv[2+j]);
+			if(!ret) {	// Found the match
+				found = 1;
+				if((i + 1) % 4 == 0)
+					residue = 0;
+				else
+					residue = 4 - ( ( i + 1 ) % 4);					// Do calculation before in the case that i+1 % 4 is 0 then you don't need to 4-0
+//				fseek(fp, residue, SEEK_CUR);
+				addr = addr+residue;
+				i=0;
+
+				printFound(argv[2+j], treenode.count, treenode.price);
+				// Add code to print that node is found
+
+				break;
+			}
+			if (ret <0) {	// Go to the left child
+				//printf("Going into the left child\n");
+				i=0;
+				left_child_offset = treenode.left_child;
+				//printf("Main: Left Child Offset: %d\n", left_child_offset);
+				if(left_child_offset)
+//					fseek(fp,left_child_offset, SEEK_SET);
+					addr = start_addr+left_child_offset;
+				else {
+					// Reached leaf node
+					break;
+				}
+			}
+			if (ret > 0) {	// Go to the right child
+				//printf("Going into the right child\n");
+				i=0;
+				right_child_offset = treenode.right_child;
+				//printf("Main: Right Child Offset: %d\n", right_child_offset);
+				if(right_child_offset)
+//					fseek(fp,right_child_offset, SEEK_SET);
+					addr = start_addr+right_child_offset;
+				else {
+					// Reached leaf node
+					break;
+				}
+			}
+		}
+		if(!found)
+			printNotFound(argv[2+j]);
+		else				// REset found for next word
+			found = 0;
+//		fseek(fp, 4, SEEK_SET);		// Go back to begening of file
+		addr = start_addr+4;
+	}
+	fclose(fp);
+	clock_gettime(CLOCK_MONOTONIC, timeend);
+	long times = ((long)(timestart->tv_sec))*1000000000 + (timestart->tv_nsec); 
+   	long timee = ((long)(timeend->tv_sec))*1000000000 + (timeend->tv_nsec);
+   	double duration = timee - times;
+   	duration = duration/1000000000.0;
+   	printTime(duration);
+   	free(timestart);
+   	free(timeend);
+	// Find the total elapsed time
+	
+	return 0; 
+}

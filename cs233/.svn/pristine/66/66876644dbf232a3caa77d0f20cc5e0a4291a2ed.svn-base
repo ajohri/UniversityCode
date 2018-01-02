@@ -1,0 +1,51 @@
+Total: 0.0/100
+
+Testing add: 0.0/3.75
+Compilation failed:
+machine.v:62: syntax error
+machine.v:62: error: invalid module item.
+
+Testing sub: 0.0/3.75
+Compilation failed:
+machine.v:62: syntax error
+machine.v:62: error: invalid module item.
+
+Testing and: 0.0/3.75
+Compilation failed:
+machine.v:62: syntax error
+machine.v:62: error: invalid module item.
+
+Testing or: 0.0/3.75
+Compilation failed:
+machine.v:62: syntax error
+machine.v:62: error: invalid module item.
+
+Testing lw: 0.0/3.75
+Compilation failed:
+machine.v:62: syntax error
+machine.v:62: error: invalid module item.
+
+Testing sw: 0.0/3.75
+Compilation failed:
+machine.v:62: syntax error
+machine.v:62: error: invalid module item.
+
+Testing slt: 0.0/3.75
+Compilation failed:
+machine.v:62: syntax error
+machine.v:62: error: invalid module item.
+
+Testing taken beq: 0.0/1.875
+Compilation failed:
+machine.v:62: syntax error
+machine.v:62: error: invalid module item.
+
+Testing not taken beq: 0.0/1.875
+Compilation failed:
+machine.v:62: syntax error
+machine.v:62: error: invalid module item.
+
+Testing max: 0.0/70.0
+Compilation failed:
+machine.v:62: syntax error
+machine.v:62: error: invalid module item.

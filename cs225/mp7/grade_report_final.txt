@@ -1,0 +1,63 @@
+Grading revision r46747 by johri3, dated 2015-05-05 16:24:41.000766319 -0500 CDT
+Monad Autograder
+Testing mp7 at 2015-05-06 00:46:05
+
+"Computer Science is no more about computers than astronomy is about telescopes." ~ E. Dijkstra
+
+Setting up test environment...
+Compiling...
+================================================================
+
+
+Running tests...
+================================================================
+addElements1  . . . . . . [5 pts] - passed
+addElements2  . . . . . . [5 pts] - passed
+testFindAndSetUnion1  . . [5 pts] - passed
+testFindAndSetUnion2  . . [5 pts] - passed
+testFindAndSetUnion3  . . [5 pts] - passed
+testMakeSmallMaze . . . . [5 pts] - passed
+testMakeMazeConnected . . [5 pts] - passed
+testMakeMazeAcyclic . . . [5 pts] - passed
+testMakeMazeTree1000  . . [5 pts] - passed
+testMakeMazeRandom  . . . [5 pts] - passed
+testSolveMazeValidPath  . [5 pts] - passed
+testSolutionBottomRow . . [5 pts] - passed
+testSolutionCorrectSquare [5 pts] - FAILED: unit_tests.cpp:377: Didn't end up at the correct bottom-row cell
+testSolveMazeSmall  . . . [5 pts] - passed
+testSolveMazeLarge  . . . [5 pts] - FAILED: Segmentation fault
+testDrawMazeSmall . . . . [5 pts] - passed
+testDrawMazeMed . . . . . [5 pts] - passed
+testDrawMazeLarge . . . . [5 pts] - passed
+testDrawSolutionMed . . . [5 pts] - passed
+testDrawSolutionLarge . . [5 pts] - passed
+
+
+Total score...
+================================================================
+TOTAL SCORE: 90
+
+
+
+Detailed test output...
+================================================================
+----------------------------------------------------------------
+testSolutionCorrectSquare [5 points]
+Result: FAILED: unit_tests.cpp:377: Didn't end up at the correct bottom-row cell
+Took 2ms (5000ms timeout)
+Output:
+----------------------------------------------------------------
+
+----------------------------------------------------------------
+testSolveMazeLarge [5 points]
+Result: FAILED: Segmentation fault
+Took 0ms (15000ms timeout)
+Output:
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Total score...
+================================================================
+TOTAL SCORE: 90
+

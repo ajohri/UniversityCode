@@ -1,0 +1,66 @@
+#define _GNU_SOURCE
+
+#include <unistd.h>
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include "format.h"
+#include <string.h>
+
+
+int main(int argc, char *argv[]) {
+
+    struct timespec ts;
+    double	elapsedSeconds, startSeconds, endSeconds;
+    pid_t	pid;
+    //int		status;
+
+ //    if(!strcmp(*argv, "./time"))
+	// print_time_usage();
+
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+       // TBD:handle error 
+    
+
+    // Timer value before forking of the child
+
+    //startSeconds= ((double)ts.tv_sec + (double)ts.tv_nsec ) / 1000000000.0;
+    startSeconds= (((double)ts.tv_sec * 1000000000.0) + (double)ts.tv_nsec) / 1000000000.0;
+    //printf("%f\n", startSeconds);
+
+    pid = fork();
+
+    if ( pid > 0) {			// Parent
+
+        waitpid(pid, &status, 0);
+    	//wait(NULL);
+        // Timer after the child exit
+
+        clock_gettime(CLOCK_MONOTONIC, &ts);
+            // TBD:handle error 
+	
+
+    //endSeconds= ((double)ts.tv_sec + (double)ts.tv_nsec ) / 1000000000.0;
+	endSeconds= (((double)ts.tv_sec * 1000000000.0) + (double)ts.tv_nsec) / 1000000000.0;
+
+        // Calculate the elasped time
+
+    //printf("%f\n", endSeconds);
+    elapsedSeconds = endSeconds - startSeconds;
+	//printf("%f\n", elapsedSeconds);
+	display_results(argv, elapsedSeconds);
+	return(elapsedSeconds);
+
+    } /*else*/ if ( pid == 0) {		// Child
+ 	//printf("%s\n", argv[1]);
+ 	//printf("%s\n", argv[2]);
+ 	execvp(argv[1], &argv[1]);
+	print_exec_failed();
+    } else { 				// Fork failed
+        print_fork_failed();
+    }
+
+    return 0;
+}

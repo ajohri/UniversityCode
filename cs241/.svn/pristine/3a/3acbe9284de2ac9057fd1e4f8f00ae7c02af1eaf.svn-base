@@ -1,0 +1,95 @@
+/**
+ * Machine Problem: Password Cracker
+ * CS 241 - Spring 2016
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <time.h>
+#include <string.h>
+#include <pthread.h>
+
+#include "cracker1.h"
+#include "thread_status.h"
+
+#define MAX_QUEUE 512
+#define MAX_SIZE 512
+
+Queue task_queue;
+char line[MAX_SIZE];
+char *buff;
+int count = 0;
+size_t number_of_threads;
+// Use the logic in editor to read a line
+// - Code for reading a line
+// We will creat a special node to show the last line
+// Creat a queue. One node for each line int password file
+// Creat a thread pool
+// - Each thred to pull an elemnt from the node
+// - Process the elemnt
+// - Thread exits when it hits the special node ( for end of file)
+// Join all the threads
+// - Pull the last node
+// - Destroy the queue 
+
+// Create the required number of threads and launch the same to process nodes in the
+// shared queue.
+
+
+void * process_task(void * ptr) {
+	QueueNode	*task;
+  	//unsigned int	thread_id;
+
+  	Queue * queue = (Queue *)ptr;
+
+	//thread_id = pthread_self();
+	
+	while(1){
+		printf("Hello\n");
+		task = (QueueNode *)Queue_pull(queue);
+		count++;
+		if(count == number_of_threads) {
+			break;
+		}
+		// if(task == '\0') {
+		// 	Queue_push(queue, NULL);
+		// 	break;
+		// }
+		// else
+		// {
+		// 	// What happens in each thread.
+		// 	return NULL;
+		// }
+	}
+
+	return NULL;
+}
+
+
+int start(size_t thread_count) {
+
+  number_of_threads = thread_count;
+
+  Queue_init(&task_queue, MAX_QUEUE);
+
+  while(fgets(line, MAX_SIZE, stdin)) {
+  	buff = strdup(line);
+  	Queue_push(&task_queue, buff);
+  }
+  //Queue_push(&task_queue, '\0');
+
+  pthread_t	*threads;
+  size_t i;
+
+  threads = (pthread_t *)calloc(thread_count, sizeof(pthread_t));
+
+  for (i = 0; i<thread_count; i++) {
+	pthread_create(&threads[i], NULL, &process_task, (void *)(i));
+  }
+
+  for (i = 0; i< thread_count; i++)
+	pthread_join(*(threads +i), NULL);
+
+  return 0;
+}

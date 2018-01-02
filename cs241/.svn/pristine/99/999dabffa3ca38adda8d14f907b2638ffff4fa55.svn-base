@@ -1,0 +1,14 @@
+int main(int argc, char *argv[])
+{
+  
+	if(argc < 2){
+  char** env;
+  for (env = envp; *env != 0; env++)
+  {
+    char* thisEnv = *env;
+    printf("%s\n", thisEnv);    
+  }
+  return(0);
+}
+//    return 0;
+}

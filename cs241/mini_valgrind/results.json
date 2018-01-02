@@ -1,0 +1,207 @@
+[
+  {
+    "timestamp": "2016-02-16 04:03:20.481687", 
+    "testcases": [
+      {
+        "description": "Test with program that has no memory leaks.", 
+        "ptsEarned": 0.0, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nFound leaked memory when there wasn't any.\ntotal_free is incorrect.\nbad_frees is incorrect.\n", 
+        "name": "no_leak", 
+        "ptsPossible": 1.0
+      }, 
+      {
+        "description": "Test with program that has memory leaks.", 
+        "ptsEarned": 1.0, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..", 
+        "name": "leak", 
+        "ptsPossible": 1.0
+      }, 
+      {
+        "description": "Test with program that has bad frees.", 
+        "ptsEarned": 0.0, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nFound leaked memory when there wasn't any.\ntotal_free is incorrect.\nbad_frees is incorrect.\n", 
+        "name": "bad_free", 
+        "ptsPossible": 1.0
+      }, 
+      {
+        "description": "Test with program that has a variety of issues.", 
+        "ptsEarned": 0.0, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nMore than one element in the list.\ntotal_free is incorrect.\nbad_frees is incorrect.\n", 
+        "name": "full", 
+        "ptsPossible": 1.0
+      }, 
+      {
+        "description": "Test with program that has a variety of issues (but under valgrind now).\nNote that you had to get the full_test correct to pass this one as well.", 
+        "ptsEarned": 0.0, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\n==27298== Memcheck, a memory error detector\n==27298== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.\n==27298== Using Valgrind-3.10.0 and LibVEX; rerun with -h for copyright info\n==27298== Command: ././full_test\n==27298== \nMore than one element in the list.\ntotal_free is incorrect.\nbad_frees is incorrect.\n==27298== \n==27298== HEAP SUMMARY:\n==27298==     in use at exit: 544 bytes in 6 blocks\n==27298==   total heap usage: 6 allocs, 0 frees, 544 bytes allocated\n==27298== \n==27298== LEAK SUMMARY:\n==27298==    definitely lost: 0 bytes in 0 blocks\n==27298==    indirectly lost: 0 bytes in 0 blocks\n==27298==      possibly lost: 0 bytes in 0 blocks\n==27298==    still reachable: 544 bytes in 6 blocks\n==27298==         suppressed: 0 bytes in 0 blocks\n==27298== Reachable blocks (those to which a pointer was found) are not shown.\n==27298== To see them, rerun with: --leak-check=full --show-leak-kinds=all\n==27298== \n==27298== For counts of detected and suppressed errors, rerun with: -v\n==27298== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 2 from 2)\n", 
+        "name": "memory", 
+        "ptsPossible": 1.0
+      }
+    ], 
+    "revision": "(Pull Time: 2016-02-18 | Revision # 23306)"
+  }, 
+  {
+    "timestamp": "2016-02-16 16:02:50.852120", 
+    "testcases": [
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nFound leaked memory when there wasn't any.\ntotal_free is incorrect.\nbad_frees is incorrect.\n", 
+        "ptsEarned": 0.0, 
+        "ptsPossible": 1.0, 
+        "name": "no_leak", 
+        "description": "Test with program that has no memory leaks."
+      }, 
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..", 
+        "ptsEarned": 1.0, 
+        "ptsPossible": 1.0, 
+        "name": "leak", 
+        "description": "Test with program that has memory leaks."
+      }, 
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nFound leaked memory when there wasn't any.\ntotal_free is incorrect.\nbad_frees is incorrect.\n", 
+        "ptsEarned": 0.0, 
+        "ptsPossible": 1.0, 
+        "name": "bad_free", 
+        "description": "Test with program that has bad frees."
+      }, 
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nMore than one element in the list.\ntotal_free is incorrect.\nbad_frees is incorrect.\n", 
+        "ptsEarned": 0.0, 
+        "ptsPossible": 1.0, 
+        "name": "full", 
+        "description": "Test with program that has a variety of issues."
+      }, 
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\n==11707== Memcheck, a memory error detector\n==11707== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.\n==11707== Using Valgrind-3.10.0 and LibVEX; rerun with -h for copyright info\n==11707== Command: ././full_test\n==11707== \nMore than one element in the list.\ntotal_free is incorrect.\nbad_frees is incorrect.\n==11707== \n==11707== HEAP SUMMARY:\n==11707==     in use at exit: 0 bytes in 0 blocks\n==11707==   total heap usage: 3 allocs, 3 frees, 544 bytes allocated\n==11707== \n==11707== All heap blocks were freed -- no leaks are possible\n==11707== \n==11707== For counts of detected and suppressed errors, rerun with: -v\n==11707== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 2 from 2)\n", 
+        "ptsEarned": 0.0, 
+        "ptsPossible": 1.0, 
+        "name": "memory", 
+        "description": "Test with program that has a variety of issues (but under valgrind now).\nNote that you had to get the full_test correct to pass this one as well."
+      }
+    ], 
+    "revision": "(Pull Time: 2016-02-18 | Revision # 23306)"
+  }, 
+  {
+    "timestamp": "2016-02-16 17:23:02.007486", 
+    "testcases": [
+      {
+        "ptsPossible": 1.0, 
+        "ptsEarned": 0.0, 
+        "description": "Test with program that has no memory leaks.", 
+        "name": "no_leak", 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nFound leaked memory when there wasn't any.\ntotal_free is incorrect.\nbad_frees is incorrect.\n"
+      }, 
+      {
+        "ptsPossible": 1.0, 
+        "ptsEarned": 1.0, 
+        "description": "Test with program that has memory leaks.", 
+        "name": "leak", 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code.."
+      }, 
+      {
+        "ptsPossible": 1.0, 
+        "ptsEarned": 0.0, 
+        "description": "Test with program that has bad frees.", 
+        "name": "bad_free", 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nFound leaked memory when there wasn't any.\ntotal_free is incorrect.\nbad_frees is incorrect.\n"
+      }, 
+      {
+        "ptsPossible": 1.0, 
+        "ptsEarned": 0.0, 
+        "description": "Test with program that has a variety of issues.", 
+        "name": "full", 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nMore than one element in the list.\ntotal_free is incorrect.\nbad_frees is incorrect.\n"
+      }, 
+      {
+        "ptsPossible": 1.0, 
+        "ptsEarned": 0.0, 
+        "description": "Test with program that has a variety of issues (but under valgrind now).\nNote that you had to get the full_test correct to pass this one as well.", 
+        "name": "memory", 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\n==30355== Memcheck, a memory error detector\n==30355== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.\n==30355== Using Valgrind-3.10.0 and LibVEX; rerun with -h for copyright info\n==30355== Command: ././full_test\n==30355== \nMore than one element in the list.\ntotal_free is incorrect.\nbad_frees is incorrect.\n==30355== \n==30355== HEAP SUMMARY:\n==30355==     in use at exit: 0 bytes in 0 blocks\n==30355==   total heap usage: 3 allocs, 3 frees, 544 bytes allocated\n==30355== \n==30355== All heap blocks were freed -- no leaks are possible\n==30355== \n==30355== For counts of detected and suppressed errors, rerun with: -v\n==30355== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 2 from 2)\n"
+      }
+    ], 
+    "revision": "(Pull Time: 2016-02-18 | Revision # 23763)"
+  }, 
+  {
+    "timestamp": "2016-02-17 04:02:55.342180", 
+    "testcases": [
+      {
+        "description": "Test with program that has no memory leaks.", 
+        "ptsEarned": 0.0, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nFound leaked memory when there wasn't any.\ntotal_free is incorrect.\nbad_frees is incorrect.\n", 
+        "name": "no_leak", 
+        "ptsPossible": 1.0
+      }, 
+      {
+        "description": "Test with program that has memory leaks.", 
+        "ptsEarned": 1.0, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..", 
+        "name": "leak", 
+        "ptsPossible": 1.0
+      }, 
+      {
+        "description": "Test with program that has bad frees.", 
+        "ptsEarned": 0.0, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nFound leaked memory when there wasn't any.\ntotal_free is incorrect.\nbad_frees is incorrect.\n", 
+        "name": "bad_free", 
+        "ptsPossible": 1.0
+      }, 
+      {
+        "description": "Test with program that has a variety of issues.", 
+        "ptsEarned": 0.0, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nMore than one element in the list.\ntotal_free is incorrect.\nbad_frees is incorrect.\n", 
+        "name": "full", 
+        "ptsPossible": 1.0
+      }, 
+      {
+        "description": "Test with program that has a variety of issues (but under valgrind now).\nNote that you had to get the full_test correct to pass this one as well.", 
+        "ptsEarned": 0.0, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\n==29715== Memcheck, a memory error detector\n==29715== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.\n==29715== Using Valgrind-3.10.0 and LibVEX; rerun with -h for copyright info\n==29715== Command: ././full_test\n==29715== \nMore than one element in the list.\ntotal_free is incorrect.\nbad_frees is incorrect.\n==29715== \n==29715== HEAP SUMMARY:\n==29715==     in use at exit: 0 bytes in 0 blocks\n==29715==   total heap usage: 3 allocs, 3 frees, 544 bytes allocated\n==29715== \n==29715== All heap blocks were freed -- no leaks are possible\n==29715== \n==29715== For counts of detected and suppressed errors, rerun with: -v\n==29715== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 2 from 2)\n", 
+        "name": "memory", 
+        "ptsPossible": 1.0
+      }
+    ], 
+    "revision": "(Pull Time: 2016-02-18 | Revision # 24371)"
+  }, 
+  {
+    "timestamp": "2016-02-18 00:03:42.987259", 
+    "testcases": [
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nFound leaked memory when there wasn't any.\ntotal_free is incorrect.\nbad_frees is incorrect.\n", 
+        "ptsPossible": 1.0, 
+        "ptsEarned": 0.0, 
+        "name": "no_leak", 
+        "description": "Test with program that has no memory leaks."
+      }, 
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..", 
+        "ptsPossible": 1.0, 
+        "ptsEarned": 1.0, 
+        "name": "leak", 
+        "description": "Test with program that has memory leaks."
+      }, 
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nFound leaked memory when there wasn't any.\ntotal_free is incorrect.\nbad_frees is incorrect.\n", 
+        "ptsPossible": 1.0, 
+        "ptsEarned": 0.0, 
+        "name": "bad_free", 
+        "description": "Test with program that has bad frees."
+      }, 
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nMore than one element in the list.\ntotal_free is incorrect.\nbad_frees is incorrect.\n", 
+        "ptsPossible": 1.0, 
+        "ptsEarned": 0.0, 
+        "name": "full", 
+        "description": "Test with program that has a variety of issues."
+      }, 
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\n==30618== Memcheck, a memory error detector\n==30618== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.\n==30618== Using Valgrind-3.10.0 and LibVEX; rerun with -h for copyright info\n==30618== Command: ././full_test\n==30618== \nMore than one element in the list.\ntotal_free is incorrect.\nbad_frees is incorrect.\n==30618== \n==30618== HEAP SUMMARY:\n==30618==     in use at exit: 0 bytes in 0 blocks\n==30618==   total heap usage: 3 allocs, 3 frees, 544 bytes allocated\n==30618== \n==30618== All heap blocks were freed -- no leaks are possible\n==30618== \n==30618== For counts of detected and suppressed errors, rerun with: -v\n==30618== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 2 from 2)\n", 
+        "ptsPossible": 1.0, 
+        "ptsEarned": 0.0, 
+        "name": "memory", 
+        "description": "Test with program that has a variety of issues (but under valgrind now).\nNote that you had to get the full_test correct to pass this one as well."
+      }
+    ], 
+    "revision": "(Pull Time: 2016-02-18 | Revision # 25322)"
+  }
+]

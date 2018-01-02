@@ -1,0 +1,62 @@
+Grades for version committed on time
+	forward_checking: 8.0 / 40
+		Warning: $sp was modified 5 times. Modifying $sp more than at the beginning and end of a function is error prone.
+		Warning: Found 4 instances of jr $ra. Using multiple return points is error prone. Consider merging return points into a single label.
+			*Passed test: forward_checking(0, zero_test)
+			*Passed test: forward_checking(0, zero_test) (evil)
+			*Failed test: forward_checking(2, row_test)
+				*Your output: 0 1 2 4 4 14 13 15 11 14 13 15 11 14 13 15 11 
+			*Failed test: forward_checking(2, row_test) (evil)
+				*Your output: 0 1 2 4 4 14 13 15 11 14 13 15 11 14 13 15 11 
+			*Failed test: forward_checking(4, col_test)
+				*Your output: 0 1 14 14 14 2 15 15 15 2 13 13 13 14 15 15 15 
+			*Failed test: forward_checking(4, col_test) (evil)
+				*Your output: 0 1 14 14 14 2 15 15 15 2 13 13 13 14 15 15 15 
+			*Failed test: forward_checking(4, cage_test)
+				*Error running test: 
+					Exception occurred at PC=0x00400c78
+					  Bad address in data/stack read: 0x00000028
+			*Failed test: forward_checking(4, cage_test) (evil)
+				*Error running test: 
+					Exception occurred at PC=0x00400c78
+					  Bad address in data/stack read: 0x00000028
+			*Failed test: forward_checking(4, valid_test)
+				*Error running test: 
+					Exception occurred at PC=0x00400c78
+					  Bad address in data/stack read: 0x00000028
+			*Failed test: forward_checking(4, valid_test) (evil)
+				*Error running test: 
+					Exception occurred at PC=0x00400c78
+					  Bad address in data/stack read: 0x00000028
+		
+	recursive_backtracking: 0.0 / 40
+		Warning: Found 2 instances of jr $ra. Using multiple return points is error prone. Consider merging return points into a single label.
+		NOTE: Your copy of forward_checking was used.
+			*Failed test: recursive_backtracking base case
+				*Timed out
+			*Failed test: recursive_backtracking base case (evil)
+				*Error running test: 
+					Exception occurred at PC=0x00400b80
+					  Unaligned address in inst/data fetch: 0xdeadc0de
+			*Failed test: recursive_backtracking 4x4
+				*Timed out
+			*Failed test: recursive_backtracking 4x4 (evil)
+				*Error running test: 
+					Exception occurred at PC=0x00400b64
+					  Unaligned address in inst/data fetch: 0xdeadc0de
+			*Failed test: recursive_backtracking 6x6
+				*Timed out
+			*Failed test: recursive_backtracking 6x6 (evil)
+				*Error running test: 
+					Exception occurred at PC=0x00400b78
+					  Unaligned address in inst/data fetch: 0xdeadc0de
+			*Failed test: recursive_backtracking 4x4 invalid
+				*Timed out
+			*Failed test: recursive_backtracking 4x4 invalid (evil)
+				*Error running test: 
+					Exception occurred at PC=0x00400b74
+					  Unaligned address in inst/data fetch: 0xdeadc0de
+		
+Total: 8.0 / 80
+
+Final Score: 8.0 / 80

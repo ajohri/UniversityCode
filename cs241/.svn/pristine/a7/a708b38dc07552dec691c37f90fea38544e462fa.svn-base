@@ -1,0 +1,54 @@
+/**
+ * Machine Problem: Password Cracker
+ * CS 241 - Spring 2016
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <time.h>
+#include <string.h>
+
+#include "cracker1.h"
+#include "thread_status.h"
+
+#define DEFAULT_THREADS 4
+#define MAX_QUEUE 100
+#define MAX_SIZE  100
+
+Queue   task_queue;
+char    line[MAX_SIZE];
+char    *buff;
+
+void usage() {
+  fprintf(stderr, "\n  cracker1 [thread_count] < <password_file>\n\n");
+  exit(1);
+}
+
+int main(int argc, char **argv) {
+  size_t thread_count = DEFAULT_THREADS;
+
+  if (argc > 2)
+    usage();
+
+  if (argc > 1) {
+    if (1 != sscanf(argv[1], "%lu", &thread_count) || thread_count < 1)
+      usage();
+  }
+
+  // capture ctrl-c
+  //signal(SIGINT, threadStatusPrint);
+
+  Queue_init(&task_queue, MAX_QUEUE);
+
+  while(fgets(line, MAX_SIZE, stdin)) {
+    buff = strdup(line);
+    Queue_push(&task_queue, buff);
+  }
+
+  // student code called here
+  printf("%d\n", thread_count);
+  int ret = start(thread_count, &task_queue);
+
+  return ret;
+}

@@ -1,0 +1,201 @@
+/**
+ * Machine Problem: Password Cracker
+ * CS 241 - Spring 2016
+ */
+
+#include "cracker2.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <time.h>
+#include <string.h>
+#include <strings.h>
+#include <pthread.h>
+#include <semaphore.h>
+
+#include "thread_status.h"
+#include "utils.h"
+#include <unistd.h>
+#include "crypt.h"
+#include "format.h"
+
+#define MAX_QUEUE 512
+#define MAX_SIZE 512
+char line[MAX_SIZE];
+char *buff;
+size_t numThreads = 0;
+char copy_string[MAX_SIZE], *token, *username, *hash, *input;
+int mod_counter = 0;
+int prefix;
+pthread_barrier_t barrier;
+int password_cracked = 0;
+int new_task = 0;
+sem_t task_toggle;
+int eof_flag = 0;
+size_t processed_threads = 0;
+
+pthread_mutex_t password_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t eof_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t processed_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void * get_input() {
+	// Start of processing line
+	char *brkt;
+	while(fgets(line, MAX_SIZE, stdin)) {
+		token = strtok_r(line, " ", &brkt);
+		username = token;
+		token = strtok_r(NULL, " ", &brkt);
+		hash = token;
+		token = strtok_r(NULL, " ", &brkt);
+		input = token;
+
+		prefix = getPrefixLength(input);
+		mod_counter = prefix;
+		while(input[mod_counter] == '.') {
+			input[mod_counter] = 'a';
+			mod_counter++;
+		}
+		input[mod_counter] = '\0';
+		pthread_barrier_wait(&barrier);
+		sem_wait(&task_toggle);
+		pthread_mutex_lock(&processed_mutex);
+		processed_threads = 0;
+		pthread_mutex_unlock(&processed_mutex);
+		pthread_mutex_lock(&password_mutex);
+		password_cracked = 0;
+		pthread_mutex_unlock(&password_mutex);
+		// Need conditional wait here.
+		// End of processing line
+	}
+	pthread_mutex_lock(&eof_mutex);
+	eof_flag = 1;
+	pthread_mutex_unlock(&eof_mutex);
+	pthread_barrier_wait(&barrier);
+	//Lock a mutex
+	return NULL;
+}
+
+char * crack_password(char * start_string, int * hash_count, long string_count, size_t tID) {
+
+	long i;
+	int exit_flag = 0;
+	char * hashed;
+
+	struct crypt_data cdata;
+	cdata.initialized = 0;
+	
+	for(i = 0; i < string_count; i++) {
+		pthread_mutex_lock(&password_mutex);
+		if(password_cracked == 1)
+			exit_flag = 1;
+		pthread_mutex_unlock(&password_mutex);
+
+		if(exit_flag) {
+			break;
+		}
+
+		hashed = crypt_r(start_string, "xx", &cdata);								// Encrypting each permutation that we have and storing it in a variable.
+		*hash_count = *hash_count + 1;													// Incrementing the counter everytime we do an encryption.
+		if(!strcmp(hashed, hash)) {												// Comparing to see if our hashed value matches the hash that was given to us.
+			pthread_mutex_lock(&password_mutex);
+			password_cracked = 1;
+			exit_flag = 1;
+			pthread_mutex_unlock(&password_mutex);
+			printf("Crack Password: The Password is: %s\n", start_string);
+			//sem_post(&task_toggle);
+		}
+		if(!exit_flag)
+			incrementString(start_string + prefix);
+		else {
+			printf("Crack Password: Password has been cracked\n");
+			printf("Crack Password: Hash Count: %d ThreadID: %zu\n", *hash_count, tID);
+			// Kill the conditional wait here.
+			break;
+		}	
+	}
+	pthread_mutex_lock(&processed_mutex);
+	processed_threads++;
+	pthread_mutex_unlock(&processed_mutex);
+	// // We have failed to find a password.
+	// sem_post(&task_toggle);
+	return start_string;
+}
+
+
+
+void * process_task(void * ptr) {
+	char local_copy[MAX_SIZE];
+	long start_index, string_count;
+	int hash_count = 0;
+
+	int eof_check = 0;
+	size_t local_process_flag = 0;
+
+	
+	do {
+		size_t * threadID = (size_t *)ptr;	
+		pthread_mutex_lock(&processed_mutex);
+		local_process_flag = processed_threads;
+		pthread_mutex_unlock(&processed_mutex);
+
+		if(local_process_flag == numThreads){
+			sem_post(&task_toggle);
+			local_process_flag = 0;
+		}
+
+		pthread_barrier_wait(&barrier);
+		pthread_mutex_lock(&eof_mutex);
+		if(eof_flag) {
+			eof_check = 1;
+		}
+		pthread_mutex_unlock(&eof_mutex);
+		if(eof_check)
+			break;
+
+		printf("Process Task: Thread Counter:%zu\n", (size_t)threadID);
+
+		printf("Process Task: Username: %s Hash: %s\n", username, hash);
+
+		strcpy(local_copy, input);
+
+		getSubrange(mod_counter - prefix, numThreads, (size_t)threadID, &start_index, &string_count);
+		setStringPosition(local_copy + prefix, start_index);
+
+		printf("Process Task: Starting String: %s\n", local_copy);
+
+		//v2_print_thread_start(*threadID, username, start_index, local_copy);
+
+		crack_password(local_copy, &hash_count, string_count, (size_t)threadID);
+		bzero(local_copy, MAX_SIZE);
+	} while(1);
+	return NULL;
+}
+
+
+
+int start(size_t thread_count) {
+  	numThreads = thread_count;
+	//get_input();
+	//v2_print_start_user(username);
+
+	pthread_t *threads, *master_thread;
+	size_t i;
+
+	threads = (pthread_t *)calloc(thread_count, sizeof(pthread_t));
+	master_thread = (pthread_t *)calloc(1, sizeof(pthread_t));
+	pthread_barrier_init(&barrier, NULL, numThreads + 1);
+	sem_init(&task_toggle, 0, 0);
+
+	pthread_create(master_thread, NULL, &get_input, NULL);
+	for (i = 0; i < thread_count; i++) {											// Creating each threading and giving a specific line to do everything in.
+		pthread_create(&threads[i], NULL, &process_task, (void *)(i+1));
+  	}
+
+  	pthread_join(*master_thread, NULL);
+  	for (i = 0; i< thread_count; i++) {
+		pthread_join(*(threads +i), NULL);
+	}
+
+
+  	return 0;
+}

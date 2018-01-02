@@ -1,0 +1,177 @@
+[
+  {
+    "timestamp": "2016-04-12 18:45:00.105104", 
+    "testcases": [
+      {
+        "description": "Testing to see if you can decrypt an empty file", 
+        "ptsEarned": 0.0, 
+        "log": "Trying to compile your code...\nFAILED TO COMPILE!\nbrutus.c:95:13: error: size of array has non-integer type 'void *'\n  int pipes[args[0]][2];\n            ^~~~~~~\nbrutus.c:97:14: error: size of array has non-integer type 'void *'\n  pid_t cpid[args[0]];\n             ^~~~~~~\nbrutus.c:100:17: error: ordered comparison between pointer and integer ('int' and 'void *') [-Werror]\n  for (i = 0; i < args[0]; i++) {\n              ~ ^ ~~~~~~~\nbrutus.c:108:27: error: implicit declaration of function 'get_most_likely_printout' is invalid in C99 [-Werror,-Wimplicit-function-declaration]\n          char * result = get_most_likely_printout(line);\n                          ^\nbrutus.c:108:27: note: did you mean 'get_most_likely_print_out'?\n./cipher.h:39:8: note: 'get_most_likely_print_out' declared here\nchar * get_most_likely_print_out(char * line);\n       ^\nbrutus.c:108:18: error: incompatible integer to pointer conversion initializing 'char *' with an expression of type 'int' [-Werror,-Wint-conversion]\n          char * result = get_most_likely_printout(line);\n                 ^        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nbrutus.c:108:18: error: unused variable 'result' [-Werror,-Wunused-variable]\nbrutus.c:115:16: error: ordered comparison between pointer and integer ('int' and 'void *') [-Werror]\n  for(i = 0; i < args[0]; i++) {\n             ~ ^ ~~~~~~~\n7 errors generated.\nmake: *** [.objs/brutus-release.o] Error 1\n", 
+        "name": "test_empty_file", 
+        "ptsPossible": 1.0
+      }, 
+      {
+        "description": "Testing to see if you can decrypt a file with 1 line", 
+        "ptsEarned": 0.0, 
+        "log": "Trying to compile your code...\nFAILED TO COMPILE!\nbrutus.c:95:13: error: size of array has non-integer type 'void *'\n  int pipes[args[0]][2];\n            ^~~~~~~\nbrutus.c:97:14: error: size of array has non-integer type 'void *'\n  pid_t cpid[args[0]];\n             ^~~~~~~\nbrutus.c:100:17: error: ordered comparison between pointer and integer ('int' and 'void *') [-Werror]\n  for (i = 0; i < args[0]; i++) {\n              ~ ^ ~~~~~~~\nbrutus.c:108:27: error: implicit declaration of function 'get_most_likely_printout' is invalid in C99 [-Werror,-Wimplicit-function-declaration]\n          char * result = get_most_likely_printout(line);\n                          ^\nbrutus.c:108:27: note: did you mean 'get_most_likely_print_out'?\n./cipher.h:39:8: note: 'get_most_likely_print_out' declared here\nchar * get_most_likely_print_out(char * line);\n       ^\nbrutus.c:108:18: error: incompatible integer to pointer conversion initializing 'char *' with an expression of type 'int' [-Werror,-Wint-conversion]\n          char * result = get_most_likely_printout(line);\n                 ^        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nbrutus.c:108:18: error: unused variable 'result' [-Werror,-Wunused-variable]\nbrutus.c:115:16: error: ordered comparison between pointer and integer ('int' and 'void *') [-Werror]\n  for(i = 0; i < args[0]; i++) {\n             ~ ^ ~~~~~~~\n7 errors generated.\nmake: *** [.objs/brutus-release.o] Error 1\n", 
+        "name": "test_one_decrypt", 
+        "ptsPossible": 1.0
+      }, 
+      {
+        "description": "Testing to see if you can decrypt multiple lines and in parallel", 
+        "ptsEarned": 0.0, 
+        "log": "Trying to compile your code...\nFAILED TO COMPILE!\nbrutus.c:95:13: error: size of array has non-integer type 'void *'\n  int pipes[args[0]][2];\n            ^~~~~~~\nbrutus.c:97:14: error: size of array has non-integer type 'void *'\n  pid_t cpid[args[0]];\n             ^~~~~~~\nbrutus.c:100:17: error: ordered comparison between pointer and integer ('int' and 'void *') [-Werror]\n  for (i = 0; i < args[0]; i++) {\n              ~ ^ ~~~~~~~\nbrutus.c:108:27: error: implicit declaration of function 'get_most_likely_printout' is invalid in C99 [-Werror,-Wimplicit-function-declaration]\n          char * result = get_most_likely_printout(line);\n                          ^\nbrutus.c:108:27: note: did you mean 'get_most_likely_print_out'?\n./cipher.h:39:8: note: 'get_most_likely_print_out' declared here\nchar * get_most_likely_print_out(char * line);\n       ^\nbrutus.c:108:18: error: incompatible integer to pointer conversion initializing 'char *' with an expression of type 'int' [-Werror,-Wint-conversion]\n          char * result = get_most_likely_printout(line);\n                 ^        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nbrutus.c:108:18: error: unused variable 'result' [-Werror,-Wunused-variable]\nbrutus.c:115:16: error: ordered comparison between pointer and integer ('int' and 'void *') [-Werror]\n  for(i = 0; i < args[0]; i++) {\n             ~ ^ ~~~~~~~\n7 errors generated.\nmake: *** [.objs/brutus-release.o] Error 1\n", 
+        "name": "test_parallel_decrypt", 
+        "ptsPossible": 3.0
+      }, 
+      {
+        "description": "Testing to see if your code handles user error like missing input file or output file", 
+        "ptsEarned": 0.0, 
+        "log": "Trying to compile your code...\nFAILED TO COMPILE!\nbrutus.c:95:13: error: size of array has non-integer type 'void *'\n  int pipes[args[0]][2];\n            ^~~~~~~\nbrutus.c:97:14: error: size of array has non-integer type 'void *'\n  pid_t cpid[args[0]];\n             ^~~~~~~\nbrutus.c:100:17: error: ordered comparison between pointer and integer ('int' and 'void *') [-Werror]\n  for (i = 0; i < args[0]; i++) {\n              ~ ^ ~~~~~~~\nbrutus.c:108:27: error: implicit declaration of function 'get_most_likely_printout' is invalid in C99 [-Werror,-Wimplicit-function-declaration]\n          char * result = get_most_likely_printout(line);\n                          ^\nbrutus.c:108:27: note: did you mean 'get_most_likely_print_out'?\n./cipher.h:39:8: note: 'get_most_likely_print_out' declared here\nchar * get_most_likely_print_out(char * line);\n       ^\nbrutus.c:108:18: error: incompatible integer to pointer conversion initializing 'char *' with an expression of type 'int' [-Werror,-Wint-conversion]\n          char * result = get_most_likely_printout(line);\n                 ^        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nbrutus.c:108:18: error: unused variable 'result' [-Werror,-Wunused-variable]\nbrutus.c:115:16: error: ordered comparison between pointer and integer ('int' and 'void *') [-Werror]\n  for(i = 0; i < args[0]; i++) {\n             ~ ^ ~~~~~~~\n7 errors generated.\nmake: *** [.objs/brutus-release.o] Error 1\n", 
+        "name": "test_error_handle", 
+        "ptsPossible": 1.0
+      }
+    ], 
+    "checksum": "86a0c070575c493e5ff5fc0327fdbe0f381bc271  brutus.c", 
+    "revision": "70813"
+  }, 
+  {
+    "timestamp": "2016-04-12 23:00:00.531118", 
+    "testcases": [
+      {
+        "log": "Trying to compile your code...\nFAILED TO COMPILE!\nbrutus.c:120:22: error: incompatible pointer to integer conversion passing 'pid_t [*(int *)args[0]]' to parameter of type '__pid_t' (aka 'int') [-Werror,-Wint-conversion]\n      wait = waitpid(cpid, &status, WUNTRACED | WCONTINUED);\n                     ^~~~\n/usr/include/sys/wait.h:137:33: note: passing argument to parameter '__pid' here\nextern __pid_t waitpid (__pid_t __pid, int *__stat_loc, int __options);\n                                ^\n1 error generated.\nmake: *** [.objs/brutus-release.o] Error 1\n", 
+        "ptsEarned": 0.0, 
+        "ptsPossible": 1.0, 
+        "name": "test_empty_file", 
+        "description": "Testing to see if you can decrypt an empty file"
+      }, 
+      {
+        "log": "Trying to compile your code...\nFAILED TO COMPILE!\nbrutus.c:120:22: error: incompatible pointer to integer conversion passing 'pid_t [*(int *)args[0]]' to parameter of type '__pid_t' (aka 'int') [-Werror,-Wint-conversion]\n      wait = waitpid(cpid, &status, WUNTRACED | WCONTINUED);\n                     ^~~~\n/usr/include/sys/wait.h:137:33: note: passing argument to parameter '__pid' here\nextern __pid_t waitpid (__pid_t __pid, int *__stat_loc, int __options);\n                                ^\n1 error generated.\nmake: *** [.objs/brutus-release.o] Error 1\n", 
+        "ptsEarned": 0.0, 
+        "ptsPossible": 1.0, 
+        "name": "test_one_decrypt", 
+        "description": "Testing to see if you can decrypt a file with 1 line"
+      }, 
+      {
+        "log": "Trying to compile your code...\nFAILED TO COMPILE!\nbrutus.c:120:22: error: incompatible pointer to integer conversion passing 'pid_t [*(int *)args[0]]' to parameter of type '__pid_t' (aka 'int') [-Werror,-Wint-conversion]\n      wait = waitpid(cpid, &status, WUNTRACED | WCONTINUED);\n                     ^~~~\n/usr/include/sys/wait.h:137:33: note: passing argument to parameter '__pid' here\nextern __pid_t waitpid (__pid_t __pid, int *__stat_loc, int __options);\n                                ^\n1 error generated.\nmake: *** [.objs/brutus-release.o] Error 1\n", 
+        "ptsEarned": 0.0, 
+        "ptsPossible": 3.0, 
+        "name": "test_parallel_decrypt", 
+        "description": "Testing to see if you can decrypt multiple lines and in parallel"
+      }, 
+      {
+        "log": "Trying to compile your code...\nFAILED TO COMPILE!\nbrutus.c:120:22: error: incompatible pointer to integer conversion passing 'pid_t [*(int *)args[0]]' to parameter of type '__pid_t' (aka 'int') [-Werror,-Wint-conversion]\n      wait = waitpid(cpid, &status, WUNTRACED | WCONTINUED);\n                     ^~~~\n/usr/include/sys/wait.h:137:33: note: passing argument to parameter '__pid' here\nextern __pid_t waitpid (__pid_t __pid, int *__stat_loc, int __options);\n                                ^\n1 error generated.\nmake: *** [.objs/brutus-release.o] Error 1\n", 
+        "ptsEarned": 0.0, 
+        "ptsPossible": 1.0, 
+        "name": "test_error_handle", 
+        "description": "Testing to see if your code handles user error like missing input file or output file"
+      }
+    ], 
+    "revision": "71052", 
+    "checksum": "454ece70128f8c3f48986bc80f3809f2bf1a640b  brutus.c"
+  }, 
+  {
+    "timestamp": "2016-04-13 04:00:00.587412", 
+    "testcases": [
+      {
+        "ptsPossible": 1.0, 
+        "ptsEarned": 1, 
+        "description": "Testing to see if you can decrypt an empty file", 
+        "name": "test_empty_file", 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nDiffing your output with the expected solution...\nSuccessfully matched solution!"
+      }, 
+      {
+        "ptsPossible": 1.0, 
+        "ptsEarned": 1, 
+        "description": "Testing to see if you can decrypt a file with 1 line", 
+        "name": "test_one_decrypt", 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nDiffing your output with the expected solution...\nSuccessfully matched solution!"
+      }, 
+      {
+        "ptsPossible": 3.0, 
+        "ptsEarned": 3, 
+        "description": "Testing to see if you can decrypt multiple lines and in parallel", 
+        "name": "test_parallel_decrypt", 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nDiffing your output with the expected solution...\nSuccessfully matched solution!"
+      }, 
+      {
+        "ptsPossible": 1.0, 
+        "ptsEarned": 1, 
+        "description": "Testing to see if your code handles user error like missing input file or output file", 
+        "name": "test_error_handle", 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code.."
+      }
+    ], 
+    "checksum": "16c7cc5afdc16641c6766be932c8da335be258dc  brutus.c", 
+    "revision": "71259"
+  }, 
+  {
+    "timestamp": "2016-04-13 18:00:00.598775", 
+    "testcases": [
+      {
+        "description": "Testing to see if you can decrypt an empty file", 
+        "ptsEarned": 1, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nDiffing your output with the expected solution...\nSuccessfully matched solution!", 
+        "name": "test_empty_file", 
+        "ptsPossible": 1.0
+      }, 
+      {
+        "description": "Testing to see if you can decrypt a file with 1 line", 
+        "ptsEarned": 1, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nDiffing your output with the expected solution...\nSuccessfully matched solution!", 
+        "name": "test_one_decrypt", 
+        "ptsPossible": 1.0
+      }, 
+      {
+        "description": "Testing to see if you can decrypt multiple lines and in parallel", 
+        "ptsEarned": 3, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nDiffing your output with the expected solution...\nSuccessfully matched solution!", 
+        "name": "test_parallel_decrypt", 
+        "ptsPossible": 3.0
+      }, 
+      {
+        "description": "Testing to see if your code handles user error like missing input file or output file", 
+        "ptsEarned": 1, 
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..", 
+        "name": "test_error_handle", 
+        "ptsPossible": 1.0
+      }
+    ], 
+    "revision": "71813", 
+    "checksum": "16c7cc5afdc16641c6766be932c8da335be258dc  brutus.c"
+  }, 
+  {
+    "timestamp": "2016-04-14 00:01:00.111828", 
+    "testcases": [
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nDiffing your output with the expected solution...\nSuccessfully matched solution!", 
+        "ptsPossible": 1.0, 
+        "ptsEarned": 1, 
+        "name": "test_empty_file", 
+        "description": "Testing to see if you can decrypt an empty file"
+      }, 
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nDiffing your output with the expected solution...\nSuccessfully matched solution!", 
+        "ptsPossible": 1.0, 
+        "ptsEarned": 1, 
+        "name": "test_one_decrypt", 
+        "description": "Testing to see if you can decrypt a file with 1 line"
+      }, 
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..\nDiffing your output with the expected solution...\nSuccessfully matched solution!", 
+        "ptsPossible": 3.0, 
+        "ptsEarned": 3, 
+        "name": "test_parallel_decrypt", 
+        "description": "Testing to see if you can decrypt multiple lines and in parallel"
+      }, 
+      {
+        "log": "Trying to compile your code...\nSuccessfully compiled your code..", 
+        "ptsPossible": 1.0, 
+        "ptsEarned": 1, 
+        "name": "test_error_handle", 
+        "description": "Testing to see if your code handles user error like missing input file or output file"
+      }
+    ], 
+    "checksum": "16c7cc5afdc16641c6766be932c8da335be258dc  brutus.c", 
+    "revision": "72570"
+  }
+]

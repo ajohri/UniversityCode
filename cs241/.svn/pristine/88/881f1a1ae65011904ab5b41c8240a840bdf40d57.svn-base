@@ -1,0 +1,167 @@
+/**
+ * Machine Problem: Password Cracker
+ * CS 241 - Spring 2016
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <time.h>
+#include <string.h>
+#include <pthread.h>
+
+#include "cracker1.h"
+#include "thread_status.h"
+#include "utils.h"
+#include <unistd.h>
+#include "crypt.h"
+
+#define MAX_QUEUE 512
+#define MAX_SIZE 512
+
+Queue task_queue;
+char line[MAX_SIZE];
+char *buff;
+
+
+
+// Use the logic in editor to read a line
+// - Code for reading a line
+// We will creat a special node to show the last line
+// Creat a queue. One node for each line int password file
+// Creat a thread pool
+// - Each thred to pull an elemnt from the node
+// - Process the elemnt
+// - Thread exits when it hits the special node ( for end of file)
+// Join all the threads
+// - Pull the last node
+// - Destroy the queue 
+
+// Create the required number of threads and launch the same to process nodes in the
+// shared queue.
+
+char * crack_password(char * in, int prefix, int * count, const char * hash) {
+
+	unsigned int i;
+	int success = 1;
+	int result = 1;
+
+	struct crypt_data cdata;
+	cdata.initialized = 0;
+	
+	printf("Crack_Password: Prefix: %d Input:%s\n", prefix, in);
+	
+	printf("Crack_Password: Length of Original String: %zu\n", strlen(in));
+	printf("Crack_Password: Last Two Characters: %c %c\n", in[strlen(in) - 2], in[strlen(in) - 1]);
+	
+	for( i = prefix; i < strlen(in); i++) {			// Changes everything to a's
+		in[i] = 'a';
+	}
+	printf("Crack_Password: Length of String: %zu\n", strlen(in));
+	printf("Crack_Password: Starting String: %s\n\n", in);
+	
+	while(success) {
+		char * hashed = crypt_r(in, "xx", &cdata);
+		count++;
+		if(!strcmp(hashed, hash)) {
+			success = 0;
+			result = 0;
+			printf("Crack_Password: Our Hash:%s Given Hash:%s Password:%s\n", hashed, hash, in);
+		}
+		else {
+			//printf("Before Increment String\n");
+			success = incrementString(in);
+			if(success == 0) {
+				printf("Should be the string with zzz:%s\n", in);
+			}
+			//printf("After Increment String\n");
+		}
+	}
+	printf("Crack_Password: Outside the while loop inside of password crack\n");
+	if(result == 1) {
+		printf("Crack_Password: Failure need to increment the number of failed passwords\n");
+		return NULL;
+	}
+	else {
+		printf("Crack_Password: Was able to recover passord: %s\n", in);
+	}
+
+	return in;
+}
+
+void * process_task(void * ptr) {
+	char *task, *username, *hash, *in, *ret;
+	char *copy_string;
+	char *token;
+	char *brkt;
+  	unsigned int	thread_id;
+  	int prefix, count = 0;
+  	int mod_counter = 0;
+
+  	Queue * queue = (Queue *)ptr;
+
+	thread_id = pthread_self();
+	while(1) {
+		printf("ThreadID: %u\n", thread_id);
+		task = (char *)Queue_pull(queue);
+	  	if(task == NULL) {
+			Queue_push(queue, NULL);
+			break;
+		}
+		else
+		{
+			copy_string = (char *)calloc(strlen(task) + 2, sizeof(char));
+			strcpy(copy_string, task);
+			token = strtok_r(copy_string, " ", &brkt);
+			username = token;
+			token = strtok_r(NULL, " ", &brkt);
+			hash = token;
+			token = strtok_r(NULL, " ", &brkt);
+			in = token;
+			printf("User:%s\n Hash:%s\n Input:%s\n", username, hash, in);
+			prefix = getPrefixLength(in);
+			mod_counter = prefix;
+			while(in[mod_counter] == '.') {
+				mod_counter++;
+			}
+			in[mod_counter] = '\0';
+			//printf("Before Crack_Password\n");
+			ret = crack_password(in, prefix, &count, hash);
+			if(ret)
+				printf("Process Task: Password: %s\n", ret);
+			//printf("After Crack_Password\n");
+		 	
+		}
+		
+	}
+
+	return NULL;
+}
+
+
+int start(size_t thread_count) {
+  //printf("%zu\n", thread_count);
+  
+  Queue_init(&task_queue, MAX_QUEUE);
+
+  while(fgets(line, MAX_SIZE, stdin)) {
+  	buff = (char *)calloc(512, sizeof(char));
+  	strcpy(buff, line);
+  	Queue_push(&task_queue, buff);
+  }
+  Queue_push(&task_queue, NULL);
+  
+  pthread_t	*threads;
+  size_t i;
+
+  threads = (pthread_t *)calloc(thread_count, sizeof(pthread_t));
+
+  for (i = 0; i<thread_count; i++) {
+	pthread_create(&threads[i], NULL, &process_task, (void *)(&task_queue));
+  }
+
+  for (i = 0; i< thread_count; i++)
+	pthread_join(*(threads +i), NULL);
+
+  return 0;
+}

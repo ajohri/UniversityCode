@@ -1,0 +1,109 @@
+/**
+ * Machine Problem: Shell
+ * CS 241 - Spring 2016
+ */
+#include "format.h"
+#include "log.h"
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+ #include <unistd.h>
+#include <time.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include "format.h"
+#include <string.h>
+
+void handle_changing_directory(Log *logname, char * command) {
+
+}
+
+void handle_death(Log *logname, char * command) {
+
+}
+
+void handle_history(Log *logname, char * command) {
+
+}
+
+void handle_printing_certain_command(Log *logname, char * command) {
+
+}
+
+void handle_last_command_executed(Log * logname, char * command) {
+
+}
+
+void handle_nonbuiltin_commands(Log * logname, char * command) {
+	int childid = -1;
+	childid = fork();
+    int back = 0;
+    for(size_t i = 1; i < strlen(command); i++){
+    	if(command[i] == '&'){
+    		if(command[i-1] == ' ')
+    			command[i-1] = '\0';    					
+    		else
+    			command[i] = '\0';
+    		}
+    		back = 1;
+    	}
+    	if(childid > 0){
+    		int status;
+    		if(back==0)
+    			waitpid(childid, &status, 0);
+    	}
+    	else if(childid == 0){
+    		print_command_executed(childid);
+    		Log_add_command(logname, command);
+    		int execworks = execvp(command, &command);
+    		if(execworks == -1)
+    			print_exec_failed(command);
+    	}
+    	else
+    		print_fork_failed();
+    	//break;
+}
+
+int main(int argc, char *argv[]) {
+  	if (argc == 0) {
+		print_usage();
+		return 1;
+	}
+
+  	// Setting up a log file.
+  	Log *logname = Log_create();
+
+  	// Buffer for the command and length of said buffer
+  	char *command = NULL;
+  	size_t len = 0;
+
+  	// The main while loop that the code will go through
+  	int done = 0;
+  	while(!done) {
+  		getline(&command, &len, stdin);
+
+  		//int command_type;
+
+    	// remove newline from the command
+    	char *nl = strchr(command, '\n');
+    	if (nl)
+      		*nl = 0;
+
+	    //int stringlen = strlen(command);
+	    if(!strcmp(command, "cd")) {
+	    	handle_changing_directory(logname, command);
+	    } else if(!strcmp(command, "exit")) {
+	    	handle_death(logname, command);
+	    } else if(!strcmp(command, "!history")) {
+	    	handle_history(logname, command);
+	    } else if(command[0] == '#') {
+	    	handle_printing_certain_command(logname, command);
+	    } else if(command[0] == '!') {
+	    	handle_last_command_executed(logname, command);
+	    } else {
+	    	handle_nonbuiltin_commands(logname, command);
+	    }
+  	}
+}

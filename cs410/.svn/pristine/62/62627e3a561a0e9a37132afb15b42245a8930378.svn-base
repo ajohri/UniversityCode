@@ -1,0 +1,18 @@
+NLP - Natural Language Processing
+This is what the computer does in order to understand a sentence
+Need to understand the syntax to the sentence
+Find the structure of the sentence
+Syntactical analysis - We can get most of this
+Semantic analysis - This is harder since we don’t know tone and common sense, Works well with some entities and not so well for other entities
+Pragmatic analysis - Not quite there yet because inference is hard to determine
+Ambiguity is killer to the computer
+
+Can’t do 100% of the speech tagging
+Shallow analysis is the best way - the text needs to be general robost & efficient
+
+Feedback - allows us to add aditional words to the query
+
+Two modes of text access - Push and Pull
+Pull - The user takes initiative (Search Engines)
+	ad hoc  - temporary infomation
+Push - The system takes initiative

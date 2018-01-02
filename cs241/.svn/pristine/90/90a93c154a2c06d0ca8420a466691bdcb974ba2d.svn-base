@@ -1,0 +1,49 @@
+/**
+ * Machine Problem: Password Cracker
+ * CS 241 - Spring 2016
+ */
+
+#include "cracker2.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <time.h>
+#include <string.h>
+#include <pthread.h>
+
+#include "thread_status.h"
+#include "utils.h"
+#include <unistd.h>
+#include "crypt.h"
+#include "format.h"
+
+#define MAX_QUEUE 512
+#define MAX_SIZE 512
+char line[MAX_SIZE];
+char *buff;
+
+void * process_task(void * ptr) {
+	printf("Hello\n");
+	printf("%s\n", (char * )ptr);
+	return NULL;
+}
+
+
+
+int start(size_t thread_count) {
+  // TODO your code here, make sure to use thread_count!
+	fgets(line, MAX_SIZE, stdin);
+	buff = (char *)calloc(512, sizeof(char));
+	strcpy(buff, line);
+
+	pthread_t *threads;
+	size_t i;
+
+	threads = (pthread_t *)calloc(thread_count, sizeof(pthread_t));
+
+	for (i = 0; i < thread_count + 1; i++) {											// Creating each threading and giving a specific line to do everything in.
+		pthread_create(&threads[i], NULL, &process_task, (void *)buff);
+  	}
+
+  	return 0;
+}

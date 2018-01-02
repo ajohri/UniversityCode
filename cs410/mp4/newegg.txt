@@ -1,0 +1,5 @@
+1)I think that there are about 4 different product types. I came to this solution by looking at the la-model.phi file, which shows the topic term distribution. Looking at the file I just chose the top topic with the highest distribution, but I also chose the topics that fell under product type category as well.
+
+2) The topic distributions show a list of the top subjects in the document. In order to determine whether complaint was positive or negative, we can remove these topics from the reviews along with any other stop words. The remaining words will have a ranking of sentiment, how positive/negative is it. We can determine the distribution of the sentiments in the reviews and the highest sentiment will determine whether there was positive or negative complaint towards the topic. We can then use these words, with the highest sentiment distribution, to summarize the complaint. If I were designing such a system, my output would be a list of topics and their corresponding sentiments.
+
+3)

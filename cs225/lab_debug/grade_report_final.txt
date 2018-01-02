@@ -1,0 +1,55 @@
+Grading revision r5876 by johri3, dated 2015-02-01 12:47:29.000358031 -0600 CST
+Monad Autograder
+Testing lab_debug at 2015-02-02 00:16:48
+
+"If you're not failing every now and again, it's a sign you're not doing anything very innovative." ~ Woody Allen
+
+Setting up test environment...
+Compiling...
+================================================================
+
+
+Running tests...
+================================================================
+no_segfaults . . . [20 pts] - passed
+produces_out_png . [10 pts] - passed
+similar_sketch . . [30 pts] - FAILED: unit_tests.cpp:53: Assertion (*out01(x, y) != white) failed
+complete_in_01_png [20 pts] - FAILED: unit_tests.cpp:66: Assertion (out01 == soln_out01) failed
+complete_in_02_png [20 pts] - FAILED: unit_tests.cpp:80: Assertion (out02 == soln_out02) failed
+
+
+Total score...
+================================================================
+TOTAL SCORE: 30
+
+
+
+Detailed test output...
+================================================================
+----------------------------------------------------------------
+similar_sketch [30 points]
+Result: FAILED: unit_tests.cpp:53: Assertion (*out01(x, y) != white) failed
+Took 94ms (1000ms timeout)
+Output:
+----------------------------------------------------------------
+
+----------------------------------------------------------------
+complete_in_01_png [20 points]
+Result: FAILED: unit_tests.cpp:66: Assertion (out01 == soln_out01) failed
+Took 93ms (1000ms timeout)
+Output:
+----------------------------------------------------------------
+
+----------------------------------------------------------------
+complete_in_02_png [20 points]
+Result: FAILED: unit_tests.cpp:80: Assertion (out02 == soln_out02) failed
+Took 72ms (1000ms timeout)
+Output:
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Total score...
+================================================================
+TOTAL SCORE: 30
+

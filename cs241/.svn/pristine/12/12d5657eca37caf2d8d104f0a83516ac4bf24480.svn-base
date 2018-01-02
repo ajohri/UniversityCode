@@ -1,0 +1,299 @@
+/**
+ * Parallel Make
+ * CS 241 - Spring 2016
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include "parmake.h"
+#include "rule.h"
+#include "queue.h"
+#include "parser.h"
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <pthread.h>
+#include <semaphore.h>
+// Treat this as main
+
+// Globals
+queue_t			rules;
+queue_t			next_rule_to_run;
+sem_t			master_worker_toggle;
+pthread_barrier_t	barrier;
+pthread_mutex_t		queue_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t		stack_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t		thread_iter_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+int 		num_threads = 1;	// Default number of worker threads
+int			stack_top = -1;
+int			*queue_pos;
+int			number_thread_runs = 0;
+int 		ifexit = 0;
+
+void parsed_new_command(char * target, char * command) {
+	size_t i;
+	size_t q_size = queue_size(&rules);
+	char * com = strdup(command);
+	for(i = 0; i < q_size; i ++) {
+		rule_t * temp = queue_at(&rules, i);
+		if(strcmp(temp->target, target) == 0) {
+			queue_enqueue(temp->commands, com);
+		}
+	}
+}
+
+
+void parsed_new_dependency(char * target, char * dependency) {
+	size_t i;
+	size_t q_size = queue_size(&rules); 
+	char * dep = strdup(dependency);
+
+	for(i = 0; i < q_size; i ++) {
+		rule_t * temp = queue_at(&rules, i);
+		if(strcmp(temp->target, target) == 0) {
+			queue_enqueue(temp->deps, dep);
+		}
+	}
+}
+
+void parsed_new_target(char * target) {
+	rule_t * current_rule = (rule_t*)malloc(sizeof(rule_t));
+	rule_init(current_rule);
+	current_rule->target = strdup(target);
+	queue_enqueue(&rules , current_rule);
+}
+
+
+void remove_dependency(char *dependency) {
+	size_t i,j;
+	size_t q_size = queue_size(&rules), dep_q_size; 
+	char *dep;
+
+	for(i = 0; i < q_size; i ++) {
+		rule_t * temp = queue_at(&rules, i);
+
+		dep_q_size = queue_size((temp->deps));
+		for (j=0; j<dep_q_size; j++) {
+			dep = queue_at(temp->deps, j);
+			if(!strcmp(dep, dependency)) {
+				queue_remove_at(temp->deps,j);
+				break;
+			}
+		}	
+	}
+}
+
+int is_dep_target(char *dependency) {
+        int ret = 0;
+        size_t num_rules = queue_size(&rules);
+    	size_t i;
+    	for(i = 0; i < num_rules; i++) {
+        	rule_t * rule = queue_at(&rules, i);
+        	if(strcmp(rule->target, dependency) == 0) {
+        		ret = 1;
+        		break;
+        	}
+    	}
+        return (ret);
+}
+
+void * identify_target(void * ptr) {
+	int	i,j = 0; 
+	rule_t	*curr_rule = NULL;
+	char	*dep;
+	int	curr_stack_top;
+	size_t	dep_q_size, k;
+	int ret = 0;
+	do {
+		if (!queue_size(&rules))
+			break;
+
+		for (i=0; i< (int)queue_size(&rules); i++) {
+			curr_rule = queue_at(&rules, i);
+			if(queue_size(curr_rule->deps) == 0) {
+				queue_pos[j] =i;
+				j++;
+			} else {
+				dep_q_size = queue_size((curr_rule->deps));
+				for (k=0; k < dep_q_size; k++) {
+					dep = queue_at(curr_rule->deps, k);
+					if((ret = is_dep_target(dep)))
+						break;
+				}	
+				if(ret == 0) {
+					queue_pos[j] =i;
+					j++;
+				}
+			}
+		}
+		stack_top= j;
+		curr_stack_top = stack_top;
+		pthread_barrier_wait(&barrier);
+		sem_wait(&master_worker_toggle);
+
+		if(ifexit)
+			printf("*** [%s] Error %d\n", curr_rule->target, ifexit);
+
+		for (i=0;i<curr_stack_top;i++) {
+			curr_rule = queue_at(&rules, queue_pos[i]);
+			remove_dependency(curr_rule->target);
+		}
+
+		for (i=curr_stack_top - 1; i>=0 ;i--)
+			queue_remove_at(&rules, queue_pos[i]);
+
+		number_thread_runs= 0; 		// All worker threads are idle
+		j = 0;
+		stack_top = -1;
+	} while (1);
+
+	pthread_barrier_wait(&barrier);
+	return NULL;
+}
+
+void * process_target(void * ptr) {
+	int target_queue_empty = 0;
+	int thread_iter = 0;
+	int curr_indx = -1;
+	size_t i;
+	rule_t	*curr_rule;
+	char	*cmd;
+	int 	ret = 0;
+
+	do {
+		pthread_mutex_lock(&thread_iter_mutex);
+		thread_iter = number_thread_runs;											// This is to see the number of threads that have come inside of this 
+		pthread_mutex_unlock(&thread_iter_mutex);
+
+		if(thread_iter == num_threads) {
+			ifexit = ret;
+			sem_post(&master_worker_toggle);
+			thread_iter = 0;
+		}
+		pthread_barrier_wait(&barrier);
+		pthread_mutex_lock(&queue_mutex);
+		if(!queue_size(&rules)) 
+			target_queue_empty= 1;
+		pthread_mutex_unlock(&queue_mutex);
+		if(target_queue_empty || ret)	
+			break;
+		for(;;) {			// Process the stack
+			pthread_mutex_lock(&stack_mutex);
+			if (stack_top != -1)
+				stack_top--;
+			curr_indx=stack_top;
+			pthread_mutex_unlock(&stack_mutex);
+			if(curr_indx == -1) {	// Target for curr iter completed
+				break;
+			} else {
+				curr_rule = queue_at(&rules,queue_pos[curr_indx]);
+
+				for(i=0; i< queue_size(curr_rule->commands); i++) {
+					cmd = queue_at(curr_rule->commands, i);
+					ret = system(cmd);
+					if(ret)
+						break;
+				}
+			}
+		}
+		pthread_mutex_lock(&thread_iter_mutex);
+		number_thread_runs++;
+		pthread_mutex_unlock(&thread_iter_mutex);
+		
+	} while (1);
+
+	return NULL;
+}
+
+int parmake(int argc, char **argv) {
+  
+  	char temp = 0;
+  	char * fname = 0;
+  	int fflag = 0;
+  	int jflag = 0;
+  	int fileStatus = 0;
+  	int given_targets = 0;
+  	char ** targets = NULL;
+  	int i;
+  	pthread_t *thread_id , *master_thread;
+  	size_t tid;
+
+  	queue_init(&rules);
+  	queue_init(&next_rule_to_run);
+
+	while((temp = getopt(argc, argv, "f:j:")) != -1) {
+		switch(temp) {
+			case 'f':
+				if(fflag == 0) {
+					fflag = 1;
+					fname = strdup(optarg);
+					fileStatus = access(fname, F_OK);
+					if(fileStatus == -1) {
+						printf("%s does not exits\n", fname);
+						exit(1);
+					}	
+					break;
+				} else {
+					printf("Only one -f flag is allowed\n");
+					exit(1);
+				}
+				break;
+
+			case 'j':
+				if(jflag == 0) {
+					jflag = 1;
+					num_threads = atoi(optarg);
+					break;
+				} else {
+					printf("Only one -j flag is allowed\n");
+					exit(1);
+				}
+				break;
+		}
+	}
+	if(fflag == 0) {
+		fileStatus = access("./makefile", F_OK);
+		if(fileStatus == -1) {
+			fileStatus = access("./Makefile", F_OK);
+			if(fileStatus == -1) {
+				exit(1);
+			} else
+				fname = "./Makefile";
+		} else
+			fname = "./makefile";
+	}
+	given_targets = argc - optind;
+	if(given_targets != 0) {
+		targets = argv + optind;
+		for(i = 0; i < given_targets; i++)
+			targets[i] = argv[optind + i];
+
+		targets[given_targets] = NULL;
+	}
+	parser_parse_makefile(fname, targets, parsed_new_target, parsed_new_dependency, parsed_new_command);
+	queue_pos = (int *)calloc(queue_size(&rules), sizeof(int));
+
+        pthread_barrier_init(&barrier, NULL, num_threads + 1);                       
+
+	thread_id = malloc(num_threads * sizeof(pthread_t));
+
+        master_thread = (pthread_t *)calloc(1, sizeof(pthread_t));
+	sem_init(&master_worker_toggle, 0 , 0);
+
+	pthread_create(master_thread, NULL, &identify_target, NULL);
+
+	for(i = 0; i < num_threads; i++) {
+		tid = i;
+		pthread_create(&thread_id[i], NULL, &process_target, (void *)(tid+1));
+	}
+
+	pthread_join(*master_thread, NULL);
+
+	for(i=0; i<num_threads; i++) {
+		pthread_join(thread_id[i], NULL);
+	}
+	return 0;
+}

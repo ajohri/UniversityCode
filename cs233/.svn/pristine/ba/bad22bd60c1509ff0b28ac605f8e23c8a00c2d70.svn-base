@@ -1,0 +1,54 @@
+Grades for version committed on time
+	unit_tests: 16 / 16
+			*Passed test: get address
+			*Passed test: num bits
+			*Passed test: extract
+		
+	four_caches: 64.0 / 64
+			*Passed test: write-back , write-allocate for config 3
+			*Passed test: write-back , write-allocate for config 3
+			*Passed test: write-back , write-allocate for config 3
+			*Passed test: write-back , write-allocate for config 3
+			*Passed test: write-back , write-around for config 2
+			*Passed test: write-back , write-around for config 2
+			*Passed test: write-back , write-around for config 2
+			*Passed test: write-back , write-around for config 2
+			*Passed test: write-through , write-around for config 0
+			*Passed test: write-through , write-around for config 0
+			*Passed test: write-through , write-around for config 0
+			*Passed test: write-through , write-around for config 0
+			*Passed test: write-through , write-allocate for config 1
+			*Passed test: write-through , write-allocate for config 1
+			*Passed test: write-through , write-allocate for config 1
+			*Passed test: write-through , write-allocate for config 1
+		
+Total: 80.0 / 80
+
+Grades for version committed as of 24 hours after deadline
+	unit_tests: 16 / 16
+			*Passed test: get address
+			*Passed test: num bits
+			*Passed test: extract
+		
+	four_caches: 64.0 / 64
+			*Passed test: write-back , write-allocate for config 3
+			*Passed test: write-back , write-allocate for config 3
+			*Passed test: write-back , write-allocate for config 3
+			*Passed test: write-back , write-allocate for config 3
+			*Passed test: write-back , write-around for config 2
+			*Passed test: write-back , write-around for config 2
+			*Passed test: write-back , write-around for config 2
+			*Passed test: write-back , write-around for config 2
+			*Passed test: write-through , write-around for config 0
+			*Passed test: write-through , write-around for config 0
+			*Passed test: write-through , write-around for config 0
+			*Passed test: write-through , write-around for config 0
+			*Passed test: write-through , write-allocate for config 1
+			*Passed test: write-through , write-allocate for config 1
+			*Passed test: write-through , write-allocate for config 1
+			*Passed test: write-through , write-allocate for config 1
+		
+	Late penalty: 20.0% (waivers are applied at the end of the semester)
+Total: 64.0 / 80
+
+Final Score: 80.0 / 80

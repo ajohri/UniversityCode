@@ -1,0 +1,51 @@
+#define _GNU_SOURCE
+
+#include <unistd.h>
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include "format.h"
+#include <string.h>
+
+extern char **environ;
+
+int main(int argc, char *argv[])
+{
+	char *duplicate_str, *token, *token_a, *token_b;
+
+    char x[2] = ",";
+    int j;
+
+    duplicate_str = argv[1];
+
+    token = strtok(duplicate_str, x);
+
+    while (token != NULL) {
+	token_a = token;
+        for (j=0; token[j] != '=';j++)
+           ;
+        token[j] = '\0';
+        token_b = token[j+1]; 
+        printf("%s\n", token_a);
+        printf("%s\n", token_b);
+        
+	token = strtok(NULL, s);
+    }
+
+
+    return 0;
+	// int i;
+	// i = 0;
+ //    if(argc < 2) {
+ //    	while(environ[i]) {
+ //    		printf("%s\n", environ[i]);
+ //    		i++;
+ //    	}
+ //    }
+ //    else {
+
+ //    }
+ //    return 0;
+}

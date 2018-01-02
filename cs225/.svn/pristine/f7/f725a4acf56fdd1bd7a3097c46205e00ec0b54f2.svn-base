@@ -1,0 +1,30 @@
+Grading revision r39420 by johri3, dated 2015-04-19 13:25:28.000361406 -0500 CDT
+Monad Autograder
+Testing lab_hash at 2015-04-20 00:37:12
+
+"Don't beg. Earn it. Then it will be granted to you." ~ Adroc Thurston
+
+Setting up test environment...
+Compiling...
+================================================================
+
+
+Running tests...
+================================================================
+testRemoveEASY . [6 pts]  - passed
+testRemoveHard . [10 pts] - passed
+testResizeOnce . [7 pts]  - passed
+testResizeAll  . [11 pts] - passed
+testInsertEasy . [6 pts]  - passed
+testInsertHard . [10 pts] - passed
+testAnagramsSC . [8 pts]  - passed
+testAnagramsLP . [8 pts]  - passed
+testWordCountSC  [8 pts]  - passed
+testWordCountLP  [8 pts]  - passed
+testLogfileParse [18 pts] - passed
+
+
+Total score...
+================================================================
+TOTAL SCORE: 100
+

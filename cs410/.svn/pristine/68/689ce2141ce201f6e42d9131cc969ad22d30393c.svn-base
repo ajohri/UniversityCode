@@ -1,0 +1,20 @@
+1) Yes I am working in a team with the following people.
+johri3
+srivats2
+fkhan10
+kgudipa2
+
+2) What is your project's goal?
+The objective of this project is to recommend movies to people based on tweets. The tweets are going to be categorized based on sentiment (happy, sad, neutral). Based on keywords, the tweets along with the movie titles will be placed in these categories and we will have a recommendation engine that will analyze user similarities to recommend movies to the users.
+
+3) What are you personally responsible for in the project? (If working along still describe what you are doing)
+I am working the chrome extentions and grabbing tweets from a user and then feeding it back into the program so that it can give proper feedback. Along with sahana I will work on making a list of words that will be considered positive and negative.
+
+4) Do you have a dataset (or is one necessary?)
+We have a corpus of positive, negative, neutral, stop, and negating words to help figure out the sentiment of the tweets. We will also use a dataset for a list of movies
+
+5) Are there any particular algorithms or methods you are planning on running?
+BM25
+
+6) What tools/software will you use for your project?
+Python for the AI backend, and Javascript for the chrome extension.

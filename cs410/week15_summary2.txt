@@ -1,0 +1,2 @@
+Project ID: 46
+Summary: The name of the projec is Aesop. What they did was create a reccomender system for the Aesop Fables. This is because there are a wide variety of messages that each fable gives but each one may not be interesting to the reader. So you sign up and start to give the likes and dislike of certain fables and over time this service will give you Aesop Fables that have messages you care about.

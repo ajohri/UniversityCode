@@ -1,0 +1,44 @@
+#include "camelCaser_tests.h"
+
+#include "camelCaser.h"
+#include <stddef.h>
+#include <ctype.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+/*
+ * Testing function for various implementations of camelCaser.
+ *
+ * @param  camelCaser   A pointer to the target camelCaser function.
+ * @return              Correctness of the program (0 for wrong, 1 for correct).
+ */
+int test_camelCaser (char ** (* camelCaser)(const char *))
+{
+	char **output_s;
+    char *ptr;
+    int j =0, ret, ret1, ret2, ret3;
+
+    output_s= camelCaser("The Heisenbug is an incredible creature. Facenovel servers get their power from its indeterminism. Code smell can be ignored with INCREDIBLE use of air freshener. God objects are the new religion.");
+    // TODO: Return 1 if the passed in function works properly; 0 if it doesn't.
+
+    ptr = *(output_s +j);
+    ret= strcmp("theHeisenbugIsAnIncredibleCreature", ptr);
+    printf("%d\n", ret);
+    printf("%s\n", ptr);
+    j++;
+    ptr = *(output_s +j);
+    ret1 = strcmp("facenovelServersGetTheirPowerFromItsIndeterminism", ptr);
+    j++;
+    ptr = *(output_s +j);
+    ret2= strcmp("codeSmellCanBeIgnoredWithIncredibleUseOfAirFreshener", ptr);
+    j++;
+    ptr = *(output_s +j);
+    ret3= strcmp("godObjectsAreTheNewReligion", ptr);
+    j++;
+
+    if (ret == 0 && ret1 == 0 && ret2 == 0 && ret3 == 0)
+     return 1;
+    else
+     return 0;
+}

@@ -1,0 +1,80 @@
+#!/bin/bash
+#PBS -l walltime=00:20:00
+#PBS nodes=1:ppn=12
+#PBS -N lockfree_queue
+#PBS -j oe
+#PBS -q cse
+
+cd $PBS_O_WORKDIR
+module unload gcc/4.9.2
+module load gcc/6.2.0
+module load openmpi/1.4-gcc
+module load intel
+
+echo "Changing number of Threads"
+
+echo "one thread"
+./list_lockfree.exe 1 50 25 25
+
+echo "two threads"
+./list_lockfree.exe 2 50 25 25
+
+echo "three threads"
+./list_lockfree.exe 3 50 25 25
+
+echo "four threads"
+./list_lockfree.exe 4 50 25 25
+
+echo "five threads"
+./list_lockfree.exe 5 50 25 25
+
+echo "six threads"
+./list_lockfree.exe 6 50 25 25
+
+echo "seven threads"
+./list_lockfree.exe 7 50 25 25
+
+echo "eight threads"
+./list_lockfree.exe 8 50 25 25
+
+echo "nine threads"
+./list_lockfree.exe 9 50 25 25
+
+echo "ten threads"
+./list_lockfree.exe 10 50 25 25
+
+echo "twenty threads"
+./list_lockfree.exe 20 50 25 25
+
+echo "thirty threads"
+./list_lockfree.exe 30 50 25 25
+
+echo "forty threads"
+./list_lockfree.exe 40 50 25 25
+
+echo "fifty threads"
+./list_lockfree.exe 50 50 25 25
+
+
+echo "Changing number of insertion and deletions"
+
+echo "two insertions"
+./list_lockfree.exe 20 50 2 2
+
+echo "four inerstions"
+./list_lockfree.exe 20 50 4 4
+
+echo "eight insertions"
+./list_lockfree.exe 20 50 8 8
+
+echo "sixteen insertions"
+./list_lockfree.exe 20 50 16 16
+
+echo "thirty-two insertions"
+./list_lockfree.exe 20 50 32 32
+
+echo "forty insertions"
+./list_lockfree.exe 20 50 40 40
+
+echo "forty-five insertions"
+./list_lockfree.exe 20 50 45 45

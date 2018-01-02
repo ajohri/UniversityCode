@@ -1,0 +1,225 @@
+/**
+ * Parallel Make
+ * CS 241 - Spring 2016
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include "parmake.h"
+#include "rule.h"
+#include "queue.h"
+#include "parser.h"
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <pthread.h>
+#include <semaphore.h>
+// Treat this as main
+
+// Globals
+queue_t rules;
+queue_t next_rule_to_run;
+sem_t threadAvailable;
+
+
+void print_dependencies(queue_t * dependencies) {
+    printf("The dependencies are:\n");
+    size_t num_deps = queue_size(dependencies);
+    size_t i;
+    for(i = 0; i < num_deps; i++) {
+        char * dependency = queue_at(dependencies, i);
+        printf("%s\n", dependency);
+    }
+}
+
+void print_commands(queue_t * commands) {
+    printf("The commands are:\n");
+    size_t num_commands = queue_size(commands);
+    size_t i;
+    for(i = 0; i < num_commands; i++) {
+        char * command = queue_at(commands, i);
+        printf("%s\n", command);
+    }
+}
+
+void print_function() {
+    size_t num_rules = queue_size(&rules);
+    size_t i;
+    for(i = 0; i < num_rules; i++) {
+        rule_t * rule = queue_at(&rules, i);
+        printf("rule is: %s\n", rule->target);
+        print_dependencies(rule->deps);
+        print_commands(rule->commands);
+    }
+}
+
+
+void parsed_new_command(char * target, char * command) {
+	size_t i;
+	size_t q_size; 
+	char * com;
+
+	com = strdup(command);
+	q_size = queue_size(&rules);
+	
+	// Go through the queue to find the one that matches with target.
+	for(i = 0; i < q_size; i ++) {
+		rule_t * temp = queue_at(&rules, i);
+		if(strcmp(temp->target, target) == 0) {
+			queue_enqueue(temp->commands, com);
+		}
+	}
+}
+
+
+// Adding all the rules(dependency) into one place
+void parsed_new_dependency(char * target, char * dependency) {
+	size_t i;
+	size_t q_size; 
+	char * dep;
+
+	dep = strdup(dependency);
+	q_size = queue_size(&rules);
+
+	// Go through the queue to find the one that matches with target.
+	for(i = 0; i < q_size; i ++) {
+		rule_t * temp = queue_at(&rules, i);
+		if(strcmp(temp->target, target) == 0) {
+			queue_enqueue(temp->deps, dep);
+		}
+	}
+}
+
+
+// Adding all the rules(target) into one place.
+void parsed_new_target(char * target) {
+	rule_t * current_rule = (rule_t*)malloc(sizeof(rule_t));
+	rule_init(current_rule);
+	current_rule->target = strdup(target);
+	queue_enqueue(&rules , current_rule);
+}
+
+void * rule_Parsing(void * ptr) {
+	size_t size_of_queue = 0;
+
+	printf("Before getting the size\n");
+	size_of_queue = queue_size(&rules);
+
+	printf("Before Segfault\n");
+	printf("Rule Parsing: Size of Queue:%zu\n", size_of_queue);
+	return NULL;
+}
+
+
+/*Method*/
+void * running_Rule(void * ptr) {
+	int done = 0;
+	int dont_run = 0;
+	//rule_t * curr_rule = NULL;
+
+	printf("Done:%d Don't Run:%d\n", done, dont_run);
+
+
+
+	return NULL;
+}
+
+
+
+int parmake(int argc, char **argv) {
+  
+  	char temp = 0;
+  	char * fname = 0;
+  	int threads = 1;
+  	int fflag = 0;
+  	int jflag = 0;
+  	int fileStatus = 0;
+  	int given_targets = 0;
+  	char ** targets = NULL;
+  	int i;
+  	pthread_t *thread_id = NULL;
+  	pthread_t *master_thread = NULL;
+
+  	queue_init(&rules);
+  	queue_init(&next_rule_to_run);
+
+	while((temp = getopt(argc, argv, "f:j:")) != -1) {
+		//printf("Inside the getopt while statement\n");
+		switch(temp) {
+			case 'f':
+				if(fflag == 0) {
+					fflag = 1;
+					fname = strdup(optarg);
+					fileStatus = access(fname, F_OK);
+					if(fileStatus == -1) {
+						printf("%s does not exits\n", fname);
+						exit(1);
+					}	
+					break;
+				} else {
+					printf("Only one -f flag is allowed\n");
+					exit(1);
+				}
+				break;
+
+			case 'j':
+				if(jflag == 0) {
+					jflag = 1;
+					threads = atoi(optarg);
+					break;
+				} else {
+					printf("Only one -j flag is allowed\n");
+					exit(1);
+				}
+				break;
+		}
+	}
+	//printf("Outside the getopt while loop\n");
+	if(fflag == 0) {
+		fileStatus = access("./makefile", F_OK);
+		if(fileStatus == -1) {
+			fileStatus = access("./Makefile", F_OK);
+			if(fileStatus == -1) {
+				exit(1);
+			} else {
+				fname = "./Makefile";
+			}
+		} else {
+			fname = "./makefile";
+		}
+	}
+	given_targets = argc - optind;
+	if(given_targets != 0) {
+		targets = argv + optind;
+		for(i = 0; i < given_targets; i++) {
+			targets[i] = argv[optind + i];
+		}
+		targets[given_targets] = NULL;
+	}
+	printf("Number of Threads is this: %d\n", threads);
+
+
+	parser_parse_makefile(fname, targets, parsed_new_target, parsed_new_dependency, parsed_new_command);
+
+	//print_function();
+
+	thread_id = malloc(threads * sizeof(pthread_t));
+	master_thread = (pthread_t *)calloc(1, sizeof(pthread_t));
+	sem_init(&threadAvailable, 0 , threads);
+
+	pthread_create(master_thread, NULL, &rule_Parsing, NULL);
+	for(i = 0; i < threads; i++) {
+		pthread_create(&thread_id[i], NULL, &running_Rule, NULL);
+	}
+
+	pthread_join(*master_thread, NULL);
+	for(i=0; i<threads; i++) {
+		pthread_join(thread_id[i], NULL);
+	}
+
+
+  // good luck!
+  return 0;
+}

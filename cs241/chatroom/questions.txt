@@ -1,0 +1,32 @@
+1) What is a socket?
+They are like pipes but for computers. A socket is how one machine talks to another machine.
+
+2) What is the difference between the domains AF_INET and AF_UNIX?
+
+
+3) What is the difference between SOCK_STREAM and SOCK_DGRAM?
+SOCK_STREAM - Used for TCP
+SOCK_DGRAM - Used for UDP
+
+4) Why is it important to clear all the values the addrinfo struct before using it in getaddrinfo?
+
+
+5) What are ai_family and ai_socktype?
+
+
+6) What does getaddrinfo do?
+This is used to translate a domain name into a IP address. This way you can connect directly there.
+
+7) What does connect do?
+Connects the socket that is passed in with address that is specified.
+
+8) What is setsockopt?
+Sets a specific socket to have certain properties based on the macros that you give it.
+
+9) What does bind do?
+It sets a socket to a specific address.
+
+10) What does listen do?
+It makes the socket that is passed thought it a passive socket. Meaning a socket that is ready to get a connection.
+
+11) What does accept do?

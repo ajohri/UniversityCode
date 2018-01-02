@@ -1,0 +1,17 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf340
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\ri720\partightenfactor0
+
+\f0\fs24 \cf0 General Questions: \
+\
+\pard\pardeftab720\li1080\fi-360\ri720\partightenfactor0
+\ls1\ilvl0\cf0 1.   One way it can improve searching is filtering the search results to the major topics that are given, this will make it faster and more efficient. Topic modeling will help organize larger data sets and each document\'92s word distribution can be ranked in regards to how relevant a document is to the query at hand.\
+2.    Since documents can be represented by a variety of word distributions using topic models, the word retrieval accuracy becomes greater. This can be done with LDA\'92s which will distribute words via topics, background words or special words. \
+3.    LDA\'92s are Bayesian inference models. Using the mixture of topics they use to generate a documents can help to create a Topics over Time model. Looking at topics over time helps to predict any kind of distribution that may occur and it helps to retrieve information about how topics grow. \
+4.    Bigrams create a larger feature space, which will create more topic distributions, and with a smaller data set, having more topic distributions becomes inefficient and inaccurate. \
+5.    Yes topic modeling would be a good idea because each week we are talking about a different topic and the words relevant to these topics are   going to show up the most frequently in the text document. }

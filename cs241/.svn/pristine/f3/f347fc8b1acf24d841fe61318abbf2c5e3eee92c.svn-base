@@ -1,0 +1,57 @@
+/**
+ * Machine Problem: Password Cracker
+ * CS 241 - Spring 2016
+ */
+
+#include "cracker1.h"
+
+// Use the logic in editor to read a line
+// - Code for reading a line
+// We will creat a special node to show the last line
+// Creat a queue. One node for each line int password file
+// Creat a thread pool
+// - Each thred to pull an elemnt from the node
+// - Process the elemnt
+// - Thread exits when it hits the special node ( for end of file)
+// Join all the threads
+// - Pull the last node
+// - Destroy the queue 
+
+// readlina from a file
+
+void get_passwd() {
+}
+
+
+// Pull node from the shaed queue and process it
+
+void process_task(Queue *queue) {
+	QueueNode	*task;
+  	unsigned int	thread_id;
+
+	thread_id = pthread_self();
+	while((task= (QueueNode *)Queue_pull(queue)) !=NULL )  {
+		printf("Thread Id : %d Password String: %s\n", thread_id, task->data);
+		get_passwd();
+	}
+}
+
+
+// Create the required number of threads and launch the same to process nodes in the
+// shared queue.
+
+int start(size_t thread_count, Queue *queue) {
+
+  pthread_t	*threads;
+
+  threads = (pthread_t *)calloc(thread_count, sizeof(pthread_t));
+
+  for (i = 0; i<thread_count; i++) {
+	pthread_create(threads+i, NULL, &process_task, (void *)queue))
+  }
+
+  for (i = 0; i< thread_count; i++)
+	pthread_join(*(threads +i), NULL);
+
+  return 0;
+}

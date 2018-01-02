@@ -1,0 +1,96 @@
+/**
+ * Terrible Threads Lab
+ * CS 241 - Spring 2016
+ */
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "queue.h"
+
+
+/**
+ *  Given data, place it on the queue.  Can be called by multiple threads.
+ */
+void queue_push( queue_t *queue,  void* data) {
+
+	queue_node_t	*new_node, *tail;
+
+	
+	new_node = calloc(1, sizeof(queue_node_t));
+	new_node->next = NULL; 
+	new_node->data = data;
+
+	tail = queue->tail;
+	pthread_mutex_lock(&queue->m);
+
+	if (queue->size == queue->maxSize){
+		pthread_mutex_unlock(&queue->m);
+		return;
+	}
+	if (! (tail)) {
+		queue->head = new_node;
+	} else {
+		tail->next = new_node;
+	}
+
+	queue->size++;
+	queue->tail = new_node;
+
+	pthread_mutex_unlock(&queue->m);
+	pthread_mutex_signal(&queue->cv);
+}
+
+
+/**
+ *  Retrieve the data from the front of the queue.  Can be called by multiple
+ * threads.
+ *  Blocks the queue is empty
+ */
+void* queue_pull(queue_t *queue) {
+
+	queue_node_t	*node; 
+	pthread_mutex_lock(&node->m);
+
+	while (! queue->head) {
+		pthread_cond_wait(&queue->cv, &queue->m);
+	}
+
+	node = queue->head;
+
+	queue->head = queue->head->next;
+	queue->size--;
+
+	if(!queue->head)
+		queue->tail = NULL;
+
+	pthread_mutex_unlock(&node->m);
+
+	return (void *)node;
+}
+
+
+/**
+ *  Initializes the queue
+ */
+void queue_init(queue_t *queue, int maxSize){
+
+	queue->maxSize = maxSize;
+	pthread_mutex_init(&queue->m);
+	pthread_cond_init(&queue->cv, NULL);
+}
+
+
+/**
+ *  Destroys the queue, freeing any remaining nodes in it.
+ */
+void queue_destroy(queue_t *queue){
+
+	int		size;
+	queue_node_t	*node;
+
+	while(size=0; size<queue->size; size) {
+		node = queue_pull(queue);
+		free(node);
+	}
+	
+}

@@ -1,0 +1,48 @@
+/**
+ * Parallelized Poisson Problems
+ * CS 241 - Spring 2016
+ */
+#include "barrier.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+
+// The returns are just for errors if you want to check for them.
+int barrier_destroy(barrier_t *t) {
+	pthread_mutex_destroy(&t->mtx);
+	pthread_cond_destroy(&t->cv);
+  	int error = 0;
+  	return error;
+}
+
+int barrier_init(barrier_t *t, unsigned n) {
+	pthread_mutex_init(&t->mtx, NULL);
+	pthread_cond_init(&t->cv, NULL);
+	t->n_threads = n;
+	t->count = n;
+	t->times_used = 0;
+  	int error = 0;
+  	return error;
+}
+
+int barrier_wait(barrier_t *t) {
+	pthread_mutex_lock(&t->mtx);
+	unsigned otimes = t->times_used;
+	t->count--;
+	if(t->count == 0)
+	{
+		t->times_used++;
+		t->count = t->n_threads;
+		pthread_cond_broadcast(&t->cv);
+	}
+	else
+	{	
+		while(t->times_used == otimes)
+		{
+			pthread_cond_wait(&t->cv, &t->mtx);
+		}
+	}
+
+	pthread_mutex_unlock(&t->mtx);
+	return 0;
+}

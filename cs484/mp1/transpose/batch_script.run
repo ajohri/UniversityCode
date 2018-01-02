@@ -1,0 +1,44 @@
+#!/bin/bash
+#PBS -l walltime=00:20:00
+#PBS nodes=1:ppn=1
+#PBS -N transpose
+#PBS -j oe
+#PBS -q cse
+
+cd $PBS_O_WORKDIR
+
+module load papi
+
+
+# ./basic_perf.exe 128 128 32 32
+# ./basic_perf.exe 256 256 32 32
+# ./basic_perf.exe 512 512 32 32
+# ./basic_perf.exe 1024 1024 32 32
+# ./basic_perf.exe 2048 2048 32 32
+# ./basic_perf.exe 4096 4096 32 32
+# ./basic_perf.exe 5000 5000 32 32
+# ./basic_perf.exe 6000 6000 32 32
+# ./basic_perf.exe 8192 8192 32 32
+# ./basic_perf.exe 10000 10000 32 32
+
+
+# Modify this script to do your tiling experiments, add more experiments
+
+./basic_perf.exe 2048 2048 4 4
+./basic_perf.exe 2048 2048 8 8
+./basic_perf.exe 2048 2048 16 16
+./basic_perf.exe 2048 2048 32 32
+./basic_perf.exe 2048 2048 64 64
+./basic_perf.exe 2048 2048 128 128
+./basic_perf.exe 2048 2048 256 256
+./basic_perf.exe 2048 2048 512 512
+./basic_perf.exe 2048 2048 1024 1024
+./basic_perf.exe 4096 4096 4 4
+./basic_perf.exe 4096 4096 8 8
+./basic_perf.exe 4096 4096 16 16
+./basic_perf.exe 4096 4096 32 32
+./basic_perf.exe 4096 4096 64 64
+./basic_perf.exe 4096 4096 128 128
+./basic_perf.exe 4096 4096 256 256
+./basic_perf.exe 4096 4096 512 512
+./basic_perf.exe 4096 4096 1024 1024

@@ -1,0 +1,28 @@
+Grades for version committed on time
+	is_complete: 10.0 / 10
+			*Passed test: is_complete test_0
+			*Passed test: is_complete test_0 (evil)
+			*Passed test: is_complete test_1
+			*Passed test: is_complete test_1 (evil)
+			*Passed test: is_complete test_2
+			*Passed test: is_complete test_2 (evil)
+			*Passed test: is_complete test_3
+			*Passed test: is_complete test_3 (evil)
+			*Passed test: is_complete test_4
+			*Passed test: is_complete test_4 (evil)
+		
+	get_unassigned_position: 10.0 / 10
+			*Passed test: get_unassigned_position solution_all_empty
+			*Passed test: get_unassigned_position solution_all_empty (evil)
+			*Passed test: get_unassigned_position solution_4_empty
+			*Passed test: get_unassigned_position solution_4_empty (evil)
+			*Passed test: get_unassigned_position solution_15_empty
+			*Passed test: get_unassigned_position solution_15_empty (evil)
+			*Passed test: get_unassigned_position solution_2_empty
+			*Passed test: get_unassigned_position solution_2_empty (evil)
+			*Passed test: get_unassigned_position solution_empty_puzzle
+			*Passed test: get_unassigned_position solution_empty_puzzle (evil)
+		
+Total: 20.0 / 20
+
+Final Score: 20.0 / 20

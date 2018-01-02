@@ -1,0 +1,209 @@
+/**
+ * Machine Problem: Password Cracker
+ * CS 241 - Spring 2016
+ */
+
+#include "cracker2.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <time.h>
+#include <string.h>
+#include <strings.h>
+#include <pthread.h>
+#include <semaphore.h>
+
+#include "thread_status.h"
+#include "utils.h"
+#include <unistd.h>
+#include "crypt.h"
+#include "format.h"
+
+#define MAX_QUEUE 512
+#define MAX_SIZE 512
+char line[MAX_SIZE];
+char *buff;
+size_t numThreads = 0;
+char copy_string[MAX_SIZE], *token, *username, *hash, *input;
+int mod_counter = 0;
+int prefix;
+pthread_barrier_t barrier;
+int password_cracked = 0;
+int new_task = 0;
+sem_t task_toggle;
+int eof_flag = 0;
+size_t processed_threads = 0;
+
+pthread_mutex_t password_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t eof_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t processed_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void * get_input() {
+	// Start of processing line
+	char *brkt;																				// This is needed for the thread safe version of strtok which is strtok_r
+	while(fgets(line, MAX_SIZE, stdin)) {													// Condition for the while loop to get the next password to crack.
+		/* Splitting up the string given into username, given hash, and partial password.*/
+		token = strtok_r(line, " ", &brkt);
+		username = token;
+		token = strtok_r(NULL, " ", &brkt);
+		hash = token;
+		token = strtok_r(NULL, " ", &brkt);
+		input = token;
+		/* Finished splitting the string up here.*/
+
+		v2_print_start_user(username);														// Printing out the username here.
+
+		prefix = getPrefixLength(input);													// Getting the index at where the dots start appearing in the input string.
+		mod_counter = prefix;
+		while(input[mod_counter] == '.') {
+			input[mod_counter] = 'a';														// Replacing the '.' with 'a'.
+			mod_counter++;
+		}
+		input[mod_counter] = '\0';															// Null terminating the string so that there are no extra unprintable characters that need to be dealt with.
+
+		pthread_barrier_wait(&barrier);														// Upon first interation this is the last thread to go into the barrier wait. 
+																							// Once this happens all the threads get out of the barrier and can continue with their tasks.
+		
+		sem_wait(&task_toggle);																// After this thread gets out of the barrier we need to wait until the password has been cracked before getting a new password.
+		
+		pthread_mutex_lock(&processed_mutex);
+		processed_threads = 0;																// Resetting the value of processed_threads since we are starting a new password.
+		pthread_mutex_unlock(&processed_mutex);
+		pthread_mutex_lock(&password_mutex);
+		password_cracked = 0;																// Resetting the flag that lets us know that we have found a password.
+		pthread_mutex_unlock(&password_mutex);
+	}
+	
+	pthread_mutex_lock(&eof_mutex);
+	eof_flag = 1;																			// This is our eof flag that gets set to one once we get out of our loop indicating that we have no more passwords to crack.
+	pthread_mutex_unlock(&eof_mutex);
+	pthread_barrier_wait(&barrier);
+	//Lock a mutex
+	return NULL;
+}
+
+char * crack_password(char * start_string, int * hash_count, long string_count, size_t tID) {
+
+	long i;
+	int exit_flag = 0;
+	char * hashed;
+
+	struct crypt_data cdata;																// This structure is needed for each individual worker thread and the thread safe version of crypt which is crypt_r
+	cdata.initialized = 0;																	// Initializing the needed struct.
+	
+	/* Cracking of passwords starts here. */
+	for(i = 0; i < string_count; i++) {
+		pthread_mutex_lock(&password_mutex);
+		if(password_cracked == 1)															// See if we have cracked the password. If so then we set another flag that the threads can see so they can stop trying to crack the password.
+			exit_flag = 1;
+		pthread_mutex_unlock(&password_mutex);
+
+		if(exit_flag) {																		// If the threads need to exit because the password has been cracked then they will do so here.
+			break;
+		}
+
+		hashed = crypt_r(start_string, "xx", &cdata);										// Encrypting each permutation that we have and storing it in a variable.
+		*hash_count = *hash_count + 1;														// Incrementing the counter everytime we do an encryption.
+		if(!strcmp(hashed, hash)) {															// Comparing to see if our hashed value matches the hash that was given to us.
+			pthread_mutex_lock(&password_mutex);
+			password_cracked = 1;															// We have found the password time to set the flag off and let the other threads know.
+			exit_flag = 1;
+			pthread_mutex_unlock(&password_mutex);
+			printf("Crack Password: The Password is: %s\n", start_string);
+			//sem_post(&task_toggle);
+		}
+		if(!exit_flag)																		// If we haven't found a permutation that matches the correct password then we try another permuation.
+			incrementString(start_string + prefix);
+		else {
+			printf("Crack Password: Password has been cracked\n");
+			printf("Crack Password: Hash Count: %d ThreadID: %zu\n", *hash_count, tID);
+			break;																			// If we found the password at this point we need to break here as well.
+		}	
+	}
+	pthread_mutex_lock(&processed_mutex);
+	processed_threads++;																	// Increment the number of threads that have come out of the for loop meaning that they are done hashing or trying to hash.
+	pthread_mutex_unlock(&processed_mutex);
+	return start_string;
+}
+
+
+
+void * process_task(void * ptr) {
+	char local_copy[MAX_SIZE];
+	long start_index, string_count;
+	int hash_count = 0;
+
+	int eof_check = 0;
+	size_t local_process_flag = 0;
+
+	
+	do {
+		size_t * threadID = (size_t *)ptr;													// Grabbing which thread has come through.	
+		pthread_mutex_lock(&processed_mutex);
+		local_process_flag = processed_threads;												// Seeing how many threads have gone through the cracking process.
+		pthread_mutex_unlock(&processed_mutex);
+
+		if(local_process_flag == numThreads){												// If all the worker threads are done then we want to release the master thread from the sem_wait it is in so that we can get the next line.
+			sem_post(&task_toggle);
+			local_process_flag = 0;
+		}
+
+		pthread_barrier_wait(&barrier);														// All the threads will wait here in the beginning so that they can be idle here while the master thread is getting the input.
+		pthread_mutex_lock(&eof_mutex);
+		if(eof_flag) {																		// If we have reached the eof we want to make our local flags 1 so we can break out of it.
+			eof_check = 1;
+		}
+		pthread_mutex_unlock(&eof_mutex);
+		if(eof_check)
+			break;																			// We break out here when we reach the end of the file.
+
+		printf("Process Task: Thread Counter:%zu\n", (size_t)threadID);
+
+		printf("Process Task: Username: %s Hash: %s\n", username, hash);
+
+		strcpy(local_copy, input);															// Making a local copy of the input so that we are not stepping on any other threads.
+
+		/* Getting the subranges here due to help from the helper methods.*/
+		getSubrange(mod_counter - prefix, numThreads, (size_t)threadID, &start_index, &string_count);
+		setStringPosition(local_copy + prefix, start_index);
+
+		printf("Process Task: Starting String: %s\n", local_copy);
+		v2_print_thread_start(threadID, username, start_index, local_copy);
+
+		crack_password(local_copy, &hash_count, string_count, (size_t)threadID);			// Calling the function that will in the end crack the password.
+		bzero(local_copy, MAX_SIZE);														// Reseting our local copy to zero.
+	} while(1);
+	return NULL;
+}
+
+
+
+int start(size_t thread_count) {
+  	numThreads = thread_count;
+
+	pthread_t *threads, *master_thread;
+	size_t i;
+
+	threads = (pthread_t *)calloc(thread_count, sizeof(pthread_t));
+	master_thread = (pthread_t *)calloc(1, sizeof(pthread_t));
+	
+	/*
+	 * With the combination of the barrier and semaphore we can create a system where one thread, the master thread is idle when the worker threads
+	 * are working on cracking the password. Then when the worker threads are idle the master thread get the next password that needs to be cracked.
+	*/
+	pthread_barrier_init(&barrier, NULL, numThreads + 1);									// Initializing the barrier that will be used later on in the code.
+	sem_init(&task_toggle, 0, 0);															// Initializing the semaphore that will be used later on in the code.
+
+	pthread_create(master_thread, NULL, &get_input, NULL);									// Creating the master thread that will get each task from the file.
+	for (i = 0; i < thread_count; i++) {													// Creating each threading and giving a specific line to do everything in.
+		pthread_create(&threads[i], NULL, &process_task, (void *)(i+1));
+  	}
+
+  	pthread_join(*master_thread, NULL);														// Joining the master thread here.
+  	for (i = 0; i< thread_count; i++) {
+		pthread_join(*(threads +i), NULL);													// Joining the worker threads here.
+	}
+
+
+  	return 0;
+}

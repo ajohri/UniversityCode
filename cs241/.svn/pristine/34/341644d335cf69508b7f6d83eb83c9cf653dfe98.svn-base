@@ -1,0 +1,115 @@
+/**
+ * Mad Mad Access Pattern
+ * CS 241 - Spring 2016
+ */
+#include <time.h>
+#include "tree.h"
+#include "utils.h"
+#include <stdlib.h>
+#include <string.h>
+/*
+  Look up a few nodes in the tree and print the info they contain.
+  This version uses fseek() and fread() to access the data.
+
+  ./lookup1 <data_file> <word> [<word> ...]
+*/
+
+#define MAX_LEN	80
+
+char name[MAX_LEN];
+
+int main(int argc, char **argv) { 
+	FILE		*fp;
+	uint32_t	left_child_offset, right_child_offset;
+	int		len, i, found,residue, j;
+	char		signature[4], ch;
+	BinaryTreeNode	treenode;
+	int		num_tokens;
+
+	if(argc < 1) {
+		printf("\n ./lookup1 <data_file> <word> [<word> ...]\n");
+		exit(0);
+	}
+
+	num_tokens = argc -2;		// Number of adwords
+
+	fp = fopen(argv[1], "rb");	// Reading file with binary data
+	if (fp) {
+		printf("Failed to  open the input file \n");
+		exit(0);
+	}
+	fread(signature, sizeof(char), 4, fp);
+	if(!strncmp(signature, "BTRE", 4)){
+		printf("Not the correct file format \n");
+		exit(0);
+	}
+
+	// Start the timer
+	// Iterate thru  key words one by one
+	// Search for the record corresponding to the input token
+	//   - Serach based on comparing with current record
+	//
+	// - If record found
+	//      print thte count and value
+	// - Else
+	//      Follow left or right offset based on the comparisong with name of
+	//      current record..
+	// - If we reach EOF and record not found
+	//      Print the error message
+	// - Pick the neck element in the adword list.
+	// Find timer
+	// - Print the elasped time
+
+	i = 0;
+	found = 0;
+
+	// Start the timer
+    for(j = 0; j< num_tokens; j++) { 
+		while (fread(&treenode, sizeof(BinaryTreeNode), 1, fp) ==1) {
+	 		while ((ch = fgetc(fp)) != '\0' ) {
+	        		name[i++] = ch;
+	    		}
+			name[i] = '\0';
+			ret = strcmp(name, argv[2+j]);
+			if(!ret) {	// Found the match
+				found = 1;
+				residue = 4-((i+1)%4);
+				fseek(fp, residue, SEEK_CUR);
+				i=0;
+
+				// Add code to print that node is found
+
+				break;
+			}
+			if (ret <0) {	// Go to the left child
+				i=0;
+				left_child_offset = treenode->left_child;
+				if(left_child_offset)
+					fseek(fp,left_child_offset, SEEK_SET);
+				else {
+					// Reached leaf node
+					break;
+				}
+			}
+			if (ret > 0){	// Go to the right child
+				i=0;
+				right_child_offset = treenode->right_child;
+				if(right_child_offset)
+					fseek(fp,right_child_offset, SEEK_SET);
+				else {
+					// Reached leaf node
+					break;
+				}
+			}
+		}
+		if(!found)
+			printf("%s keyword not found\n", argv[j+2]);
+		else				// REset found for next word
+			found = 0;
+		fseek(fp, 0, SEEK_SET);		// Go back to begening of file
+	}
+
+	// Find the total elapsed time
+	
+	return 0; 
+}

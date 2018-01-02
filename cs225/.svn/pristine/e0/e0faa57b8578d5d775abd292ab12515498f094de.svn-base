@@ -1,0 +1,24 @@
+Grading revision r42436 by johri3, dated 2015-04-26 06:55:46.000603297 -0500 CDT
+Monad Autograder
+Testing mp7.1 at 2015-04-29 00:23:07
+
+"I have never let my schooling interfere with my education." ~ Mark Twain
+
+Setting up test environment...
+Compiling...
+================================================================
+
+
+Running tests...
+================================================================
+addElements1 . . . . [20 pts] - passed
+addElements2 . . . . [20 pts] - passed
+testFindAndSetUnion1 [20 pts] - passed
+testFindAndSetUnion2 [20 pts] - passed
+testFindAndSetUnion3 [20 pts] - passed
+
+
+Total score...
+================================================================
+TOTAL SCORE: 100
+

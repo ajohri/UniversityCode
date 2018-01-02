@@ -1,0 +1,7 @@
+Many different retrieval methods
+
+Probabilistic method: f(d,q,) = p(R = 1 | d, q), R set of {0.1}
+
+If a user likes document d, how likely would the user enter query (in order to retrieve d)?
+
+This week's lecutre starts off with more retrieval methods and how some perform better over time. One of these methods is called a probabilistic method. What this does it over time you can identify certain things and then that becomes more and more likely to indentify at a later point. The only assumption to this is that the user fomulates a query based on an "imaginary relevant document". Then the lecture goes into describing what statistical language model is and how it quantifies the uncertainties in natural languages. The simplest language model is the Unigram LM which generates text by each word independently. Then the rest of the lecture videos go more into depth on different models

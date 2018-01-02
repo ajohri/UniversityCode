@@ -1,0 +1,51 @@
+1) NLP - Natural Language Processing
+This is what the computer does in order to understand a sentence
+Need to understand the syntax to the sentence
+Find the structure of the sentence
+Syntactical analysis - We can get most of this
+Semantic analysis - This is harder since we don’t know tone and common sense, Works well with some entities and not so well for other entities
+Pragmatic analysis - Not quite there yet because inference is hard to determine
+Ambiguity is killer to the computer
+
+Can’t do 100% of the speech tagging
+Shallow analysis is the best way - the text needs to be general robost & efficient
+
+Feedback - allows us to add aditional words to the query
+
+************************************************************************************************************************************************
+
+2) This part shows the connection between the user and the system and the types of interactions they can have.
+Two modes of text access - Push and Pull
+Pull - The user takes initiative (Search Engines) - Not so stable
+	ad hoc  - temporary infomation
+	Querying vs. Browsing
+	Querying - Works best when the user knows exactly what keywords to use and the system can retrive the relevant documents
+	Browsing - User follows a path in order to get the information that is needed
+
+
+Push - The system takes initiative (Google maps for giving you information or if you need to do reserach and in order to do so there is a bank of information that the system can refer to and give back) - Stable
+	Example - Amazon's reccomended feature
+
+************************************************************************************************************************************************
+
+3) Text Retreval(TR) Problem
+Document Selection vs. Document Ranking
+Text Retreval is known as search technology in the industry
+Text Retreval is an empirically defined problem
+
+Document Selection:
+System will decided if a document is relevant or not
+	Problems:
+	The classifer is unlikely to be accurate
+	Hard to find the right position between a document that is 100% relevant (due to incorrently thinking some words made the document completely relevant) versus a document that has no relevance to the search
+
+Document Ranking:
+System will only need to decide if a certain document is more relevant than that of another document.
+
+Probability Ranking Principle: Returning a ranked list of documents in descending order of probability that a document is relevant to to the query is the optimal strategy under the following two assumptions
+	The use of a document is not dependent on that of another document
+	A user would browse the results sequentially
+
+
+************************************************************************************************************************************************
+

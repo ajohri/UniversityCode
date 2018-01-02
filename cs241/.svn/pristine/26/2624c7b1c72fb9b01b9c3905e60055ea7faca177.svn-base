@@ -1,0 +1,275 @@
+/**
+ * Machine Problem 4
+ * CS 241 - Spring 2016
+ */
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+
+
+typedef struct meta_area *mem_ptr;	// Typedef for meta area pointer
+
+typedef struct meta_area {		
+	size_t	size;
+	int	free_flag;		// Flag value 0 means it is used
+	mem_ptr next,prev;
+	void	*ptr;
+	char 	data[1];
+} mem_node;				// Typedef for meta-area node
+
+
+mem_ptr	head;				// Global pointer to starting of heap
+
+/**
+ * Get the next chunk of free memory area that is big enough 
+ */
+mem_ptr get_mem(mem_ptr	*last_visited, size_t size) {
+	mem_ptr temp = head;
+
+	while(temp && !(temp->free_flag && (temp->size >= size))){
+		*last_visited = temp;
+		temp = temp->next;
+	}
+	return(temp);
+}
+
+/**
+ * Expand the the heap by a given size.
+ */
+mem_ptr expand_heap(mem_ptr end, size_t	size) {
+	mem_ptr	temp;
+	void *ptr;
+
+	ptr = sbrk(0);
+	temp = (mem_ptr)ptr;			// Get the address of current top of the heap
+	if(sbrk(size + sizeof(mem_node)) == (void *)-1)
+		return NULL;
+
+	temp->size = size;
+	temp->next = NULL;
+	temp->prev = end;
+	temp->ptr = temp->data;
+
+	if(end)
+		end->next = temp;
+	temp->free_flag = 0;
+	return(temp);
+}
+
+/**
+ * Split the memory block based on needed size
+ * Used to carve out the required memory from the available memory
+ */
+void split_mem_block(mem_ptr mem, size_t size){
+	mem_ptr	last;
+
+	last = (mem_ptr)(mem->data +size);
+	last->size = mem->size - size - sizeof(mem_node);
+	last->next = mem->next;
+	last->ptr  = last->data;
+	last->free_flag = 1;			// Remaining memory block after split marked as free
+	if(last->next)
+		last->next->prev = last;
+
+	mem->size = size;
+	mem->next = last;
+	mem->free_flag = 0;			// Mark the memory block in use
+}
+
+/**
+ * Merge the memory cell with the next memory cell in the list
+ */
+mem_ptr merge(mem_ptr mem_addr){
+
+	if (mem_addr->next && mem_addr->next->free_flag) {
+		mem_addr->size += sizeof(mem_node) + mem_addr->next->size;
+		mem_addr->next = mem_addr->next->next;
+		if(mem_addr->next)
+			mem_addr->next->prev = mem_addr;
+	}
+	return(mem_addr);
+}
+
+/**
+ * Allocate space for array in memory
+ *
+ * Allocates a block of memory for an array of num elements, each of them size
+ * bytes long, and initializes all its bits to zero. The effective result is
+ * the allocation of an zero-initialized memory block of (num * size) bytes.
+ *
+ * @param num
+ *    Number of elements to be allocated.
+ * @param size
+ *    Size of elements.
+ *
+ * @return
+ *    A pointer to the memory block allocated by the function.
+ *
+ *    The type of this pointer is always void*, which can be cast to the
+ *    desired type of data pointer in order to be dereferenceable.
+ *
+ *    If the function failed to allocate the requested block of memory, a
+ *    NULL pointer is returned.
+ *
+ * @see http://www.cplusplus.com/reference/clibrary/cstdlib/calloc/
+ */
+void *calloc(size_t num, size_t size) {
+  // implement calloc!
+
+	void *ptr = malloc(num*size);
+
+	if(ptr)
+		bzero(ptr,  num*size);
+
+  	return ptr;
+}
+
+/**
+ * Allocate memory block
+ *
+ * Allocates a block of size bytes of memory, returning a pointer to the
+ * beginning of the block.  The content of the newly allocated block of
+ * memory is not initialized, remaining with indeterminate values.
+ *
+ * @param size
+ *    Size of the memory block, in bytes.
+ *
+ * @return
+ *    On success, a pointer to the memory block allocated by the function.
+ *
+ *    The type of this pointer is always void*, which can be cast to the
+ *    desired type of data pointer in order to be dereferenceable.
+ *
+ *    If the function failed to allocate the requested block of memory,
+ *    a null pointer is returned.
+ *
+ * @see http://www.cplusplus.com/reference/clibrary/cstdlib/malloc/
+ */
+void *malloc(size_t size) {
+  // implement malloc!
+	mem_ptr		temp, mem_addr;
+
+	if(head){
+		temp = head;
+		mem_addr =  get_mem(&temp, size);
+		if(mem_addr) {
+			if ( (mem_addr->size -size) > (sizeof(mem_node) + 16)) 
+				split_mem_block(mem_addr, size);
+		} else {
+			mem_addr = expand_heap(temp, size);
+			if (!mem_addr)
+				return (NULL);
+		}
+	} else {
+		mem_addr = expand_heap(NULL, size);
+		if(!mem_addr)
+			return NULL;
+		head = mem_addr;
+	}
+
+  return (mem_addr->data);
+}
+
+/**
+ * Get the meta-data for the user pointer
+ */
+mem_ptr addr_to_meta_data(void *addr){
+	char	*tmp;
+
+	tmp = addr;
+	return(addr - sizeof(mem_node));
+}
+
+// void move_data(mem_ptr src, mem_ptr dst){
+// }
+
+/**
+ * Deallocate space in memory
+ *
+ * A block of memory previously allocated using a call to malloc(),
+ * calloc() or realloc() is deallocated, making it available again for
+ * further allocations.
+ *
+ * Notice that this function leaves the value of ptr unchanged, hence
+ * it still points to the same (now invalid) location, and not to the
+ * null pointer.
+ *
+ * @param ptr
+ *    Pointer to a memory block previously allocated with malloc(),
+ *    calloc() or realloc() to be deallocated.  If a null pointer is
+ *    passed as argument, no action occurs.
+ */
+void free(void *ptr) {
+
+	mem_ptr mem_addr;
+
+	if(!ptr)
+		return;
+
+	mem_addr = addr_to_meta_data(ptr);
+
+	if (mem_addr->prev && mem_addr->prev->free_flag)	// Try to coalesce with prev block
+		mem_addr = merge(mem_addr->prev); 
+	if(mem_addr->next) {				// Try to coalesce with next block
+		merge(mem_addr);
+	} else {					// Shrink heap
+		if (mem_addr->prev)
+			mem_addr->prev->next = NULL;	
+		else
+			head = NULL;			// Heap size zero
+		brk(mem_addr);
+	}
+	mem_addr->free_flag = 1;				// Flag it as free space
+}
+
+/**
+ * Reallocate memory block
+ *
+ * The size of the memory block pointed to by the ptr parameter is changed
+ * to the size bytes, expanding or reducing the amount of memory available
+ * in the block.
+ *
+ * The function may move the memory block to a new location, in which case
+ * the new location is returned. The content of the memory block is preserved
+ * up to the lesser of the new and old sizes, even if the block is moved. If
+ * the new size is larger, the value of the newly allocated portion is
+ * indeterminate.
+ *
+ * In case that ptr is NULL, the function behaves exactly as malloc, assigning
+ * a new block of size bytes and returning a pointer to the beginning of it.
+ *
+ * In case that the size is 0, the memory previously allocated in ptr is
+ * deallocated as if a call to free was made, and a NULL pointer is returned.
+ *
+ * @param ptr
+ *    Pointer to a memory block previously allocated with malloc(), calloc()
+ *    or realloc() to be reallocated.
+ *
+ *    If this is NULL, a new block is allocated and a pointer to it is
+ *    returned by the function.
+ *
+ * @param size
+ *    New size for the memory block, in bytes.
+ *
+ *    If it is 0 and ptr points to an existing block of memory, the memory
+ *    block pointed by ptr is deallocated and a NULL pointer is returned.
+ *
+ * @return
+ *    A pointer to the reallocated memory block, which may be either the
+ *    same as the ptr argument or a new location.
+ *
+ *    The type of this pointer is void*, which can be cast to the desired
+ *    type of data pointer in order to be dereferenceable.
+ *
+ *    If the function failed to allocate the requested block of memory,
+ *    a NULL pointer is returned, and the memory block pointed to by
+ *    argument ptr is left unchanged.
+ *
+ * @see http://www.cplusplus.com/reference/clibrary/cstdlib/realloc/
+ */
+// void *realloc(void *ptr, size_t size) {
+//   // implement realloc!
+//   return NULL;
+// }

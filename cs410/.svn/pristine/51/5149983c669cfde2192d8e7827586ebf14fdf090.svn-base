@@ -1,0 +1,5 @@
+1. Features important for nationality detection are skin color, place of birth, spoken language. Features important for sentiment analysis are positive versus negative words, unigrams, bigrams, pragmatic analysis, syntactic analysis. 
+
+2. The expected accuracy of the majority voting baseline is going to be 45% because it will take the class label with the highest percentage every time. On the other hand, the expected accuracy of the random decision baseline is going to be 35% because it has an even chance of choosing any of the three class labels. 
+
+3. We can tell when we have enough training data because once the threshold is reached, the accuracy isn’t going to increase no matter how large the data set is. It will end up leveling off at a certain point where the data is not affected and that shows that we have reached a point where we more training data will not affect the results.  

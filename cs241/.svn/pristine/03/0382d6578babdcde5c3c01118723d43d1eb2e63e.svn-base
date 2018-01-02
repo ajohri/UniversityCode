@@ -1,0 +1,167 @@
+/**
+ * Machine Problem: Password Cracker
+ * CS 241 - Spring 2016
+ */
+
+#include "cracker2.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <time.h>
+#include <string.h>
+#include <pthread.h>
+
+#include "thread_status.h"
+#include "utils.h"
+#include <unistd.h>
+#include "crypt.h"
+#include "format.h"
+
+#define MAX_QUEUE 512
+#define MAX_SIZE 512
+char line[MAX_SIZE];
+char *buff;
+size_t numThreads = 0;
+char copy_string[MAX_SIZE], *token, *username, *hash, *input;
+int mod_counter = 0;
+int prefix;
+pthread_barrier_t barrier;
+int password_cracked = 0;
+int new_task = 0;
+
+pthread_mutex_t password_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t new_line_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void get_input() {
+	// Start of processing line
+	char *task;
+	char *brkt;
+	char *new_line;
+	new_line = fgets(line, MAX_SIZE, stdin);
+	if(new_line){
+		pthread_mutex_lock(&new_line_mutex);
+		new_task = 1;
+		pthread_mutex_unlock(&new_line_mutex);
+	}
+	// if new_line is not NULL then you set new_task = 1
+	buff = (char *)calloc(512, sizeof(char));
+	strcpy(buff, line);
+
+	pthread_barrier_init(&barrier, NULL, numThreads);
+
+	task = buff;
+	strcpy(copy_string, task);
+
+	token = strtok_r(copy_string, " ", &brkt);
+	username = token;
+	token = strtok_r(NULL, " ", &brkt);
+	hash = token;
+	token = strtok_r(NULL, " ", &brkt);
+	input = token;
+
+	prefix = getPrefixLength(input);
+	mod_counter = prefix;
+	while(input[mod_counter] == '.') {
+		input[mod_counter] = 'a';
+		mod_counter++;
+	}
+	input[mod_counter] = '\0';
+	// End of processing line
+}
+
+char * crack_password(char * start_string, int * hash_count, long string_count, size_t tID) {
+
+	long i;
+	int flag;
+
+	struct crypt_data cdata;
+	cdata.initialized = 0;
+	
+	for(i = 0; i < string_count; i++) {
+		char * hashed = crypt_r(start_string, "xx", &cdata);								// Encrypting each permutation that we have and storing it in a variable.
+		*hash_count = *hash_count + 1;													// Incrementing the counter everytime we do an encryption.
+		if(!strcmp(hashed, hash)) {												// Comparing to see if our hashed value matches the hash that was given to us.
+			pthread_mutex_lock(&password_mutex);
+			password_cracked = 1;
+			pthread_mutex_unlock(&password_mutex);
+			printf("Crack Password: The Password is: %s\n", start_string);
+		}
+		pthread_barrier_wait(&barrier);
+		pthread_mutex_lock(&password_mutex);
+		flag = password_cracked;
+		pthread_mutex_unlock(&password_mutex);
+		if(!flag)
+			incrementString(start_string + prefix);
+		else {
+			printf("Crack Password: Password has been cracked\n");
+			printf("Crack Password: Hash Count: %d ThreadID: %zu\n", *hash_count, tID);
+			exit(0);
+		}
+		// else {
+		// 	// We need a new task
+		// }
+			
+	}
+	// if(result == 1) {
+	// 	number_of_passwords_not_recovered++;									// Keep track of how many passwords we did not recover.
+	// 	return NULL;
+	// }
+	// else {
+	// 	number_of_passwords_recovered++;										// Keep track of how many passwords we did recover.
+	// }
+
+	return start_string;
+}
+
+
+
+void * process_task(void * ptr) {
+	char local_copy[MAX_SIZE];
+	long start_index, string_count;
+	int hash_count = 0;
+
+	size_t * threadID = (size_t *)ptr;													// This is thread number 
+
+	printf("Process Task: Thread Counter:%zu\n", (size_t)threadID);
+
+	printf("Process Task: Username: %s Hash: %s\n", username, hash);
+
+	strcpy(local_copy, input);
+
+	getSubrange(mod_counter - prefix, numThreads, (size_t)threadID, &start_index, &string_count);
+	setStringPosition(local_copy + prefix, start_index);
+
+	printf("Process Task: Starting String: %s\n", local_copy);
+
+	v2_print_thread_start(*threadID, username, start_index, local_copy);
+
+	crack_password(local_copy, &hash_count, string_count, (size_t)threadID);
+
+	return NULL;
+}
+
+
+
+int start(size_t thread_count) {
+  // TODO your code here, make sure to use thread_count!
+	numThreads = thread_count;
+
+	get_input();
+	v2_print_start_user(username);
+
+	pthread_t *threads;
+	size_t i;
+
+	threads = (pthread_t *)calloc(thread_count, sizeof(pthread_t));
+
+	for (i = 0; i < thread_count; i++) {											// Creating each threading and giving a specific line to do everything in.
+		pthread_create(&threads[i], NULL, &process_task, (void *)(i+1));
+  	}
+
+  	for (i = 0; i< thread_count; i++) {
+		pthread_join(*(threads +i), NULL);
+	}
+
+
+  	return 0;
+}

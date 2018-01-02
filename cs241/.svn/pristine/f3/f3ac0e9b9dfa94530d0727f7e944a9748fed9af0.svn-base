@@ -1,0 +1,34 @@
+/**
+ * Machine Problem 0
+ * CS 241 - Spring 2016
+ */
+
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "part2-functions.h"
+
+/**
+ * (Edit this function to print out the "Illinois" lines in
+ * part2-functions.c in order.)
+ */
+int main() {
+  // This is for the first srep
+  int * first = (int*)malloc(sizeof(int*));
+  *first = 81;
+  first_step(*first);
+  free(first);
+
+  // This is for the second step
+  int * second = (int *)malloc(sizeof(int *));
+  *second = 132;
+  second_step(second);
+  free(second);
+
+  int ** third = (int**)malloc(sizeof(int**));
+  *third[0] = 8942;
+  double_step(third);
+
+  // your code here
+  return 0;
+}

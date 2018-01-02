@@ -1,0 +1,102 @@
+#define _GNU_SOURCE
+#include "camelCaser.h"
+
+#include <stddef.h>
+#include <ctype.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+struct node
+{
+	char * token;
+	int size;
+	int contains_punct;
+	struct node *next;
+};
+
+typedef struct node Node_T;
+
+
+char **camel_caser(const char *input_str) {
+   char * duplicate_input_str;
+   const char s[2] = " ";
+   char *token;
+   // int arr_size, max_sz;
+   // int arr_num = 1;
+   // char **outpu_s;
+   // int newStr_flag;
+   Node_T *head, *curr, *prev;
+   head= NULL;
+
+   //newStr_flag = 1;
+   duplicate_input_str = strdup(input_str);
+
+   /* get the first token */
+   token = strtok(duplicate_input_str, s);
+
+   /* walk through other tokens */
+   while( token != NULL ) 
+   {
+      //printf( " %s\n", token );
+     
+      curr = (Node_T *)malloc(sizeof(Node_T));
+      if (!head)
+          head= curr;
+      curr->token = token;
+      curr->size = strlen(token);
+      prev->next = curr;
+      prev = curr;
+
+      token = strtok(NULL, s);
+   }
+
+   curr = head;
+   int j;
+   int newStr_flag = 1;
+   int arr_size, max_sz;
+   int arr_num = 1;
+   char **outpu_s;
+   
+   while (curr) {
+		j = 0;
+		
+    	while(j < curr->size) {
+    		if(isalpha(curr->token[j])) {
+    			curr -> token[j] = tolower(curr->token[j]);
+    		}
+    	 	if(j == 0) {
+    			if(!newStr_flag) {
+    				if(isalpha(curr->token[j])) {
+    					curr->token[j] = toupper(curr->token[j]);
+    				}
+    			}
+    		}
+    		newStr_flag = 0;
+    		j++;
+    	} // end of while(j<curr -> size)
+    	printf ("%s\n", curr->token);
+	 	
+	 	//printf("%d\n", curr->size);
+    	
+    	arr_size += curr->size;
+    	if(ispunct(curr->token[j - 1]))
+    	{
+    		newStr_flag = 1;
+    		curr->contains_punct = 0;
+    		arr_num++;
+    		curr->size = arr_size;
+    		if(max_sz < arr_size + 1)
+    			max_sz = arr_size + 1;
+    		arr_size = 0;
+    	}
+    	curr = curr->next;
+    	printf("%d\n", arr_num);
+   }   
+
+
+ 	return NULL;
+}
+
+
+

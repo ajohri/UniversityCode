@@ -1,0 +1,120 @@
+/**
+ * Machine Problem: Password Cracker
+ * CS 241 - Spring 2016
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <time.h>
+#include <string.h>
+#include <pthread.h>
+
+#include "cracker1.h"
+#include "thread_status.h"
+
+#define MAX_QUEUE 512
+#define MAX_SIZE 512
+
+Queue task_queue;
+char line[MAX_SIZE];
+char *buff;
+// Use the logic in editor to read a line
+// - Code for reading a line
+// We will creat a special node to show the last line
+// Creat a queue. One node for each line int password file
+// Creat a thread pool
+// - Each thred to pull an elemnt from the node
+// - Process the elemnt
+// - Thread exits when it hits the special node ( for end of file)
+// Join all the threads
+// - Pull the last node
+// - Destroy the queue 
+
+// Create the required number of threads and launch the same to process nodes in the
+// shared queue.
+
+
+void decode(char * total_line , char *username, char *hash, char **in) {
+	char *token;
+	// char *username;
+	// char *hash;
+	// char *in;
+	token = strtok(total_line, " ");
+	username = token;
+	token = strtok(NULL, " ");
+	hash = token;
+	token = strtok(NULL, " ");
+	in = token;
+	printf("User:%s\n Hash:%s\n Input:%s\n", username, hash, in);
+}
+
+
+
+void * process_task(void * ptr) {
+	char *task, *name, *hash, *inp;
+  	unsigned int	thread_id;
+
+  	Queue * queue = (Queue *)ptr;
+
+	thread_id = pthread_self();
+
+	//task = (QueueNode *)malloc(sizeof(QueueNode));
+	
+	while(1) {
+		//printf("Hello\n");
+		printf("ThreadID: %u\n", thread_id);
+		task = (char *)Queue_pull(queue);
+		printf("Address of buffer in thread: %p\n", task);
+		//printf("After Pull\n");
+		if(task == NULL) {
+			printf("Destorying the queue here.\n");
+			Queue_push(queue, NULL);
+			break;
+		}
+		else
+		{
+			// What happens in each thread.
+			// printf("Coming inside\n");
+			printf("Pointer to string inside while: %s ThreadID: %u\n", task, thread_id);
+			decode(task, &username, &hash, &inp);
+			//return NULL;
+		}
+		printf("Reentering threadID: %u\n", thread_id);
+	}
+
+	return NULL;
+}
+
+
+int start(size_t thread_count) {
+
+  //number_of_threads = thread_count;
+
+  printf("%zu\n", thread_count);
+  
+  Queue_init(&task_queue, MAX_QUEUE);
+
+  while(fgets(line, MAX_SIZE, stdin)) {
+  	buff = (char *)calloc(512, sizeof(char));
+  	strcpy(buff, line);
+  	printf("%s\n", buff);
+  	printf("Address of buffer: %p\n", buff);
+  	Queue_push(&task_queue, buff);
+  }
+  Queue_push(&task_queue, NULL);
+  
+  pthread_t	*threads;
+  size_t i;
+
+  threads = (pthread_t *)calloc(thread_count, sizeof(pthread_t));
+
+  for (i = 0; i<thread_count; i++) {
+	pthread_create(&threads[i], NULL, &process_task, (void *)(&task_queue));
+  }
+
+  for (i = 0; i< thread_count; i++)
+	pthread_join(*(threads +i), NULL);
+
+  return 0;
+}

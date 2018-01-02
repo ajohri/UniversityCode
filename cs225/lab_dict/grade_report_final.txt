@@ -1,0 +1,27 @@
+Grading revision r30236 by johri3, dated 2015-03-27 16:54:26.000482994 -0500 CDT
+Monad Autograder
+Testing lab_dict at 2015-03-30 00:36:11
+
+"Most software today is very much like an Egyptian pyramid with millions of bricks piled on top of each other, with no structural integrity, but just done by brute force and thousands of slaves." ~ Alan Kay
+
+Setting up test environment...
+Compiling...
+================================================================
+
+
+Running tests...
+================================================================
+test_get_anagrams  . . . . [15 pts] - passed
+test_get_all_anagrams  . . [15 pts] - passed
+test_fib . . . . . . . . . [5 pts]  - passed
+test_memoized_fib  . . . . [15 pts] - passed
+test_homophones  . . . . . [10 pts] - passed
+test_cartalk_puzzle  . . . [10 pts] - passed
+test_get_common_words_3  . [15 pts] - passed
+test_get_common_words_3000 [15 pts] - passed
+
+
+Total score...
+================================================================
+TOTAL SCORE: 100
+

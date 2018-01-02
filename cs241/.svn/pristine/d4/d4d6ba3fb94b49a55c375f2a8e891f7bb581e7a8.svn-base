@@ -1,0 +1,139 @@
+/**
+ * Ideal Indirection Lab
+ * CS 241 - Spring 2016
+ */
+#include <stdio.h>
+#include "mmu.h"
+#include "kernel.h"
+#define vpn1_mask 0x0007ff8000000000
+#define vpn2_mask 0x0000007ff8000000
+#define vpn3_mask 0x0000000007ff8000
+#define offset_mask 0x0000000000007fff
+
+MMU *MMU_create() {
+  MMU *mmu = calloc(1, sizeof(MMU));
+  PageTable **base_pts = mmu->base_pts;
+  for (size_t i = 0; i < MAX_PROCESS_ID; i++) {
+    base_pts[i] = PageTable_create();
+  }
+  mmu->tlb = TLB_create();
+  return mmu;
+}
+
+void *MMU_get_physical_address(MMU *mmu, void *virtual_address, size_t pid) {
+  
+  long vpn1, vpn2, vpn3, offset, tlb_value;
+  void * key;
+  TLB   *tlb;
+  void    *phy_addr;
+  PageTable *pt1, *pt2, *pt3, *base;
+
+  vpn1 = ((long)virtual_address & vpn1_mask) >> 39;
+  vpn2 = ((long)virtual_address & vpn2_mask) >> 27;
+  vpn3 = ((long)virtual_address & vpn3_mask) >> 15;
+  offset = ((long)virtual_address & offset_mask);
+  tlb_value = ((long)virtual_address & (vpn1_mask | vpn2_mask | vpn3_mask)) >> 15;
+
+  key = (void *)tlb_value;
+
+  tlb = mmu->tlb;
+
+  phy_addr = TLB_get_physical_address(&tlb, key, pid);
+
+  if(phy_addr)          // found TLB entry
+    return ((char *)phy_addr+offset); // TLB entry stores the address of
+  else
+    MMU_tlb_miss(mmu, phy_addr, pid);
+    /*TLB MISS*/
+
+            // the frame so add offeset to get the
+            // actal byte address
+  // Physical address not found in TLB cache. No search in the page table
+
+  base = mmu->base_pts[pid];
+  pt1 = PageTable_get_entry(base, vpn1);
+  if (pt1) {          // Traverse down the chain
+      pt2 = PageTable_get_entry(pt1, vpn2);
+      if (pt2) {        // Traverse down the chain
+        pt3 = PageTable_get_entry(pt2, vpn3);
+        if (pt3) {      // Frame is allocated
+
+          // Add the entry to the TLB
+          TLB_add_physical_address(&tlb, key, pid, pt3);
+
+          return ((char *)pt3 +offset); 
+        } 
+        else {
+          // Raise page fault but the number of creates and asks_kernel_for_frame = 1
+          
+          pt3 = ask_kernel_for_frame();
+          PageTable_set_entry(pt2, vpn3, pt3);
+      
+          // Add the entry to the TLB
+          TLB_add_physical_address(&tlb, key, pid, pt3);
+
+          return ((char *)pt3 +offset); 
+        }
+      } else {
+        // Raise page fault but the number of creates and asks_kernel_for_frame = 2
+        pt2 = PageTable_create();
+        pt3 = ask_kernel_for_frame();
+        PageTable_set_entry(pt1, vpn2, pt2);
+        PageTable_set_entry(pt2, vpn3, pt3);
+
+        // Add the entry to the TLB
+        TLB_add_physical_address(&tlb, key, pid, pt3);
+
+        return((char *)pt3 +offset);
+      }
+  } else {          // Create first level page table
+      // Raise page fault but the number of creates and asks_kernel_for_frame = 3
+      pt1 = PageTable_create();
+      
+      MMU_raise_page_fault(mmu, (void *)vpn1, pid);
+      
+      PageTable_set_entry(base, vpn1, pt1);
+      pt2 = PageTable_create();
+      pt3 = ask_kernel_for_frame();
+      PageTable_set_entry(pt1, vpn2, pt2);
+      PageTable_set_entry(pt2, vpn3, pt3);
+
+      MMU_raise_page_fault(mmu, (void *)vpn2, pid);
+      MMU_raise_page_fault(mmu, (void *)vpn3, pid);
+
+      // Add the entry to the TLB
+      TLB_add_physical_address(&tlb, key, pid, pt3);
+
+      return((char *)pt3 +offset);
+  }
+  
+
+  return NULL;
+}
+
+void MMU_tlb_miss(MMU *mmu, void *address, size_t pid) {
+  mmu->num_tlb_misses++;
+  printf("Process [%lu] tried to access [%p] and it couldn't find it in the "
+         "TLB so the MMU has to check the PAGE TABLES\n",
+         pid, address);
+}
+
+void MMU_raise_page_fault(MMU *mmu, void *address, size_t pid) {
+  mmu->num_page_faults++;
+  printf(
+      "Process [%lu] tried to access [%p] and the MMU got an invalid entry\n",
+      pid, address);
+}
+
+void MMU_free_process_tables(MMU *mmu, size_t pid) {
+  PageTable *base_pt = mmu->base_pts[pid];
+  Pagetable_delete_tree(base_pt);
+}
+
+void MMU_delete(MMU *mmu) {
+  for (size_t i = 0; i < MAX_PROCESS_ID; i++) {
+    MMU_free_process_tables(mmu, i);
+  }
+  TLB_delete(mmu->tlb);
+  free(mmu);
+}

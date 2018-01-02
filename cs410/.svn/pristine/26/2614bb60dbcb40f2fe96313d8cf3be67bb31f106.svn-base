@@ -1,0 +1,13 @@
+1. [classifier]
+method = "knn"
+k=10
+[classifier.ranker]
+method = "bm25"
+//loss = "hinge"
+//prefix = "sgd-model"
+
+2. The new classifier that I used, which was knn,  decreased the accuracy by about 0.1. The accuracy before was around 0.82 but now has gone down to around 0.73. 
+
+3. According to the confusion matrix, the classifier as knn made the same mistakes as the original classifier. The original classifier had a high level of confusion between “HKG and CHN” and “TWN and CHN”. The knn classifier also had increased confusion between these classes. 
+
+4. The null hypothesis would be that there is no correlation between the accuracy and the classifier. We would then test whether the p value is more than 5% difference which is attributed to randomness. If not, then the classifier that has the higher accuracy is better.  

@@ -1,0 +1,31 @@
+Grading revision r41746 by johri3, dated 2015-04-24 10:39:38.000106788 -0500 CDT
+Monad Autograder
+Testing lab_heaps at 2015-04-27 00:22:22
+
+"Honestly, if you don't fit in, then you're probably doing the right thing." ~ LIGHTS
+
+Setting up test environment...
+Compiling...
+================================================================
+
+
+Running tests...
+================================================================
+peek1  . . . [5 pts] - passed
+peek2  . . . [5 pts] - passed
+heapifyDown1 [9 pts] - passed
+heapifyDown2 [9 pts] - passed
+heapifyDown3 [9 pts] - passed
+heapifyDown4 [9 pts] - passed
+heapifyDown5 [9 pts] - passed
+buildHeap1 . [9 pts] - passed
+buildHeap2 . [9 pts] - passed
+buildHeap3 . [9 pts] - passed
+buildHeap4 . [9 pts] - passed
+buildHeap5 . [9 pts] - passed
+
+
+Total score...
+================================================================
+TOTAL SCORE: 100
+

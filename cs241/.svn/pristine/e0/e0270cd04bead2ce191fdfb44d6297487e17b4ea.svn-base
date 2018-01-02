@@ -1,0 +1,94 @@
+/**
+ * Machine Problem: Password Cracker
+ * CS 241 - Spring 2016
+ */
+
+#include "cracker2.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <time.h>
+#include <string.h>
+#include <pthread.h>
+
+#include "thread_status.h"
+#include "utils.h"
+#include <unistd.h>
+#include "crypt.h"
+#include "format.h"
+
+#define MAX_QUEUE 512
+#define MAX_SIZE 512
+char line[MAX_SIZE];
+char *buff;
+size_t numThreads = 0;
+char copy_string[MAX_SIZE], *token, *username, *hash, *input;
+
+void * process_task(void * ptr) {
+	
+	long start_index, count;
+	
+
+	size_t * threadID = (size_t *)ptr;													// This is thread number 
+	printf("Process Task: Thread Counter:%zu\n", (size_t)threadID);
+
+	printf("Process Task: Username: %s Hash: %s Input: %s\n", username, hash, input);
+
+	getSubrange(mod_counter - prefix, numThreads, (size_t)threadID, &start_index, &count);
+	setStringPosition(input + prefix, start_index);
+
+	printf("Process Task: Starting String: %s\n", input);
+
+	return NULL;
+}
+
+
+
+int start(size_t thread_count) {
+  // TODO your code here, make sure to use thread_count!
+	numThreads = thread_count;
+
+	char *task;
+	char *brkt;
+	int mod_counter = 0;
+	int prefix;
+
+	// Start of processing line
+	fgets(line, MAX_SIZE, stdin);
+	buff = (char *)calloc(512, sizeof(char));
+	strcpy(buff, line);
+
+	task = buff;
+	strcpy(copy_string, task);
+
+	token = strtok_r(copy_string, " ", &brkt);
+	username = token;
+	token = strtok_r(NULL, " ", &brkt);
+	hash = token;
+	token = strtok_r(NULL, " ", &brkt);
+	input = token;
+
+	prefix = getPrefixLength(input);
+	mod_counter = prefix;
+	while(input[mod_counter] == '.') {
+		input[mod_counter] = 'a';
+		mod_counter++;
+	}
+	input[mod_counter] = '\0';
+	// End of processing line
+
+	pthread_t *threads;
+	size_t i;
+
+	threads = (pthread_t *)calloc(thread_count, sizeof(pthread_t));
+
+	for (i = 0; i < thread_count; i++) {											// Creating each threading and giving a specific line to do everything in.
+		pthread_create(&threads[i], NULL, &process_task, (void *)(i+1));
+  	}
+
+  	for (i = 0; i< thread_count; i++)
+		pthread_join(*(threads +i), NULL);
+
+
+  	return 0;
+}

@@ -1,0 +1,208 @@
+----------------------------------------
+Begin Torque Prologue (Wed Feb 22 16:20:14 2017)
+Job ID:           5679296.cc-mgmt1.campuscluster.illinois.edu
+Username:         ksrajan2
+Group:            cs484_S17
+Job Name:         transpose
+Limits:           walltime=00:20:00
+Job Queue:        cse
+Account:          cs
+Nodes:            taub245
+End Torque Prologue
+----------------------------------------
+rm *.exe 
+g++ -g -O0 -openmp -std=c++11 -lrt -Wno-write-strings -fpermissive -o basic_perf.exe  main_basic.cpp basic.cpp basic_unrolled.cpp basic_flipped.cpp basic_block.cpp papi_support.c papi_helpers.c -lm -L /usr/local/apps/papi/5.4.1/lib -lpapi 
+Intializing PAPI.
+ncpus = 6, nnodes = 2, total cpus = 12
+L1 details : size = 32768
+L2 details : levels = 3, size = 262144, line_size = 64, num_lines = 4096, associativity = 8
+L3 details : size = 12582912
+Prepared L1 counters.
+THIS IS THE BLOCKING
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+BLOCKING: Basic Time taken = 431215
+Intializing PAPI.
+ncpus = 6, nnodes = 2, total cpus = 12
+L1 details : size = 32768
+L2 details : levels = 3, size = 262144, line_size = 64, num_lines = 4096, associativity = 8
+L3 details : size = 12582912
+Prepared L1 counters.
+THIS IS THE BLOCKING
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+BLOCKING: Basic Time taken = 1653917
+Intializing PAPI.
+ncpus = 6, nnodes = 2, total cpus = 12
+L1 details : size = 32768
+L2 details : levels = 3, size = 262144, line_size = 64, num_lines = 4096, associativity = 8
+L3 details : size = 12582912
+Prepared L1 counters.
+THIS IS THE BLOCKING
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+BLOCKING: Basic Time taken = 8006643
+Intializing PAPI.
+ncpus = 6, nnodes = 2, total cpus = 12
+L1 details : size = 32768
+L2 details : levels = 3, size = 262144, line_size = 64, num_lines = 4096, associativity = 8
+L3 details : size = 12582912
+Prepared L1 counters.
+THIS IS THE BLOCKING
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+BLOCKING: Basic Time taken = 31526382
+Intializing PAPI.
+ncpus = 6, nnodes = 2, total cpus = 12
+L1 details : size = 32768
+L2 details : levels = 3, size = 262144, line_size = 64, num_lines = 4096, associativity = 8
+L3 details : size = 12582912
+Prepared L1 counters.
+THIS IS THE BLOCKING
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+BLOCKING: Basic Time taken = 134375162
+Intializing PAPI.
+ncpus = 6, nnodes = 2, total cpus = 12
+L1 details : size = 32768
+L2 details : levels = 3, size = 262144, line_size = 64, num_lines = 4096, associativity = 8
+L3 details : size = 12582912
+Prepared L1 counters.
+THIS IS THE BLOCKING
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+BLOCKING: Basic Time taken = 540090728
+Intializing PAPI.
+ncpus = 6, nnodes = 2, total cpus = 12
+L1 details : size = 32768
+L2 details : levels = 3, size = 262144, line_size = 64, num_lines = 4096, associativity = 8
+L3 details : size = 12582912
+Prepared L1 counters.
+THIS IS THE BLOCKING
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+BLOCKING: Basic Time taken = 731773385
+Intializing PAPI.
+ncpus = 6, nnodes = 2, total cpus = 12
+L1 details : size = 32768
+L2 details : levels = 3, size = 262144, line_size = 64, num_lines = 4096, associativity = 8
+L3 details : size = 12582912
+Prepared L1 counters.
+THIS IS THE BLOCKING
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+BLOCKING: Basic Time taken = 1064800902
+Intializing PAPI.
+ncpus = 6, nnodes = 2, total cpus = 12
+L1 details : size = 32768
+L2 details : levels = 3, size = 262144, line_size = 64, num_lines = 4096, associativity = 8
+L3 details : size = 12582912
+Prepared L1 counters.
+THIS IS THE BLOCKING
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+BLOCKING: Basic Time taken = 2200567913
+Intializing PAPI.
+ncpus = 6, nnodes = 2, total cpus = 12
+L1 details : size = 32768
+L2 details : levels = 3, size = 262144, line_size = 64, num_lines = 4096, associativity = 8
+L3 details : size = 12582912
+Prepared L1 counters.
+THIS IS THE BLOCKING
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+Starting PAPI counters.
+Resetting PAPI.
+BLOCKING: Basic Time taken = 2914100421
+----------------------------------------
+Begin Torque Epilogue (Wed Feb 22 16:20:45 2017)
+Job ID:           5679296.cc-mgmt1.campuscluster.illinois.edu
+Username:         ksrajan2
+Group:            cs484_S17
+Job Name:         transpose
+Session:          25352
+Limits:           walltime=00:20:00
+Resources:        cput=00:00:16,energy_used=0,mem=1054512kb,vmem=1103016kb,walltime=00:00:31
+Job Queue:        cse
+Account:          cs
+Nodes:            taub245
+End Torque Epilogue
+----------------------------------------

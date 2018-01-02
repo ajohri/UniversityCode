@@ -1,0 +1,10 @@
+#!/bin/bash
+#PBS -l walltime=00:10:00
+#PBS nodes=1:ppn=1
+#PBS -N mp0_a
+#PBS -j oe
+#PBS -q cs
+
+cd $PBS_O_WORKDIR
+
+./mp0_a.exe > out_mp0_a.txt

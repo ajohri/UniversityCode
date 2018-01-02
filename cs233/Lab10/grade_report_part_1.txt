@@ -1,0 +1,10 @@
+Grades for version committed on time
+	part 1: 0.0 / 40.0
+			*Failed test: mapseed 751 (Upper Left)
+			*Failed test: mapseed 123654 (Upper Right)
+			*Failed test: mapseed 600 (Bottom Right)
+			*Failed test: mapseed 750 (Bottom Left)
+		
+Total: 0.0 / 40.0
+
+Final Score: 0.0 / 40.0

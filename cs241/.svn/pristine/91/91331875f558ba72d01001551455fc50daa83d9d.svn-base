@@ -1,0 +1,79 @@
+#define _GNU_SOURCE
+
+#include <unistd.h>
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include "format.h"
+#include <string.h>
+#include <wordexp.h>
+
+extern char **environ;
+
+int main(int argc, char *argv[])
+{
+	pid_t pid;
+
+	if(argc <= 0) {
+		print_env_usage();
+	}
+	
+    if(argc < 2) {
+    	int i;
+    	i = 0;
+    	while(environ[i]) {
+    		printf("%s\n", environ[i]);
+    		i++;
+    	}
+    }
+    else {
+    	pid = fork();
+
+    	if(pid > 0) {									// Parent Process
+    		wait(NULL);
+    	} else if (pid == 0) {							// Child Process
+    		char * duplicate_str, *token, *token_a, *token_b;
+
+    		char x[2] = ",";
+    		int j, env_flag;
+
+    		duplicate_str = strdup(argv[1]);
+    		token = strtok(duplicate_str, x);
+
+    		while(token != NULL) {
+    			token_a = token;
+    			
+    			for(j = 0; token[j] != '='; j++);
+    			
+    			token[j] = '\0';
+    			token_b = &token[j+1];    			
+
+    			for(j = 0; j < (int)strlen(token_b); j++) {
+    				if(token_b[j] == '%')
+    					token_b[j] = '$';
+    			} // go through character by character
+
+    			wordexp_t expansion;
+    			char** word;
+    			wordexp(token_b, &expansion, 0);
+    			word = expansion.we_wordv;
+
+				//printf("%s\n", token_a);
+    			//printf("%s\n", token_b);
+
+    			env_flag = setenv(token_a, *word, 1);
+
+    			token = strtok(NULL, x);
+    		}
+	    	free(duplicate_str);
+	    	execvp(argv[2], &argv[2]);
+
+	    	print_exec_failed();
+    	} else {										// Forking Failed
+    		print_fork_failed();
+    	}
+    }
+    return 0;
+}
