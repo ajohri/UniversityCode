@@ -1,7 +1,0 @@
-Grades for version committed on time
-	mv_mult: 20 / 20
-			*Passed test: Achieved 2x speedup
-		
-Total: 20.0 / 20
-
-Final Score: 20.0 / 20
